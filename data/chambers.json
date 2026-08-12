@@ -1,0 +1,981 @@
+{
+    "Uncle Iroh": {
+        "character": "Iroh",
+        "cards": {
+            "Rain of Fire": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 1
+                },
+                "intercept": 6,
+                "force": 5,
+                "text": "Whenever your opponent flips a card, you may pay a green energy. If you do, your opponent discards that card and flips a new one in the same zone."
+            },
+            "Unchained": {
+                "cost": {
+                    "r": 0,
+                    "g": 2,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "When you counterattack, look at the top two cards of your deck. Put them back in any order."
+            },
+            "Suppressing Fire": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 7,
+                "text": "Your opponent cannot focus or pitch, and while defending, his or her zones cannot be charged."
+            },
+            "Firecrackers": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 5,
+                "text": "While your opponent is defending, his or her zones cannot be charged."
+            },
+            "Smokescreen": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 8,
+                "force": 7,
+                "text": "When you counterattack, look at the top three cards of your deck. Put them back in any order."
+            }
+        },
+        "traits": ["FOX", "MIND", "SHADOW", "FIRE"],
+        "chambers": {
+            "AME212": {
+                "back": "Smokescreen",
+                "front": "Firecrackers",
+                "rarity": "C"
+            },
+            "AME213": {
+                "back": "Smokescreen",
+                "front": "Firecrackers",
+                "rarity": "C"
+            },
+            "AME214": {
+                "back": "Suppressing Fire",
+                "front": "Firecrackers",
+                "rarity": "U"
+            },
+            "AME215": {
+                "back": "Smokescreen",
+                "front": "Unchained",
+                "rarity": "U"
+            },
+            "AME216": {
+                "back": "Suppressing Fire",
+                "front": "Unchained",
+                "rarity": "U"
+            },
+            "AME217": {
+                "back": "Rain of Fire",
+                "front": "Unchained",
+                "rarity": "R"
+            }
+        }
+    },
+    "King Bumi": {
+        "character": "Bumi",
+        "cards": {
+            "Omashu Dodgeball": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 5,
+                "text": "Whenever your opponent focuses, Omashu Dodgeball gets +1 Force."
+            },
+            "Scouring-Earth Kick": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 8,
+                "text": "You opponent's cards have \"Reflip: Green.\""
+            },
+            "Shadow of the Boulder": {
+                "cost": {
+                    "r": 0,
+                    "g": 2,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 8,
+                "text": "Your opponent's strikes have \"Green >>> +1 Intercept.\""
+            },
+            "Stone Heel of the King": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 7,
+                "text": "Whenever your opponent focuses, Stone Heel of the King gets +1 Force."
+            },
+            "Shock Wave": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 1
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "Whenever your opponent plays a card in a zone, eliminate an energy in that zone."
+            }
+        },
+        "traits": ["BULL", "BODY", "GOOD", "EARTH"],
+        "chambers": {
+            "AME188": {
+                "back": "Stone Heel of the King",
+                "front": "Omashu Dodgeball",
+                "rarity": "C"
+            },
+            "AME189": {
+                "back": "Stone Heel of the King",
+                "front": "Omashu Dodgeball",
+                "rarity": "C"
+            },
+            "AME190": {
+                "back": "Scouring-Earth Kick",
+                "front": "Omashu Dodgeball",
+                "rarity": "U"
+            },
+            "AME191": {
+                "back": "Stone Heel of the King",
+                "front": "Shadow of the Boulder",
+                "rarity": "U"
+            },
+            "AME192": {
+                "back": "Scouring-Earth Kick",
+                "front": "Shadow of the Boulder",
+                "rarity": "U"
+            },
+            "AME193": {
+                "back": "Shock Wave",
+                "front": "Shadow of the Boulder",
+                "rarity": "R"
+            }
+        }
+    },
+    "Aang": {
+        "character": "Aang",
+        "cards": {
+            "Updraft": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 4,
+                "text": "When you counterattack, you may rearrange your allies."
+            },
+            "Penguin Sledding": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 7,
+                "text": "Whenever your opponent focuses, Penguin Sledding gets -1 Force."
+            },
+            "Vertigo Dash": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "When you counterattack, add an energy to each of your zones."
+            },
+            "Taming the Unagi": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 9,
+                "force": 8,
+                "text": "Whenever your opponent focuses, Taming the Unagi gets -2 Force."
+            },
+            "Avatar State": {
+                "cost": {
+                    "r": 5,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 12,
+                "force": 12,
+                "text": "When you counterattack, eliminate all of your energy."
+            }
+        },
+        "traits": ["FOX", "SPIRIT", "GOOD", "AIR"],
+        "chambers": {
+            "AME177": {
+                "back": "Taming the Unagi",
+                "front": "Penguin Sledding",
+                "rarity": "C"
+            },
+            "AME178": {
+                "back": "Vertigo Dash",
+                "front": "Penguin Sledding",
+                "rarity": "U"
+            },
+            "AME179": {
+                "back": "Taming the Unagi",
+                "front": "Updraft",
+                "rarity": "U"
+            },
+            "AME180": {
+                "back": "Vertigo Dash",
+                "front": "Updraft",
+                "rarity": "U"
+            },
+            "AME181": {
+                "back": "Avatar State",
+                "front": "Updraft",
+                "rarity": "R"
+            },
+            "AME176": {
+                "back": "Taming the Unagi",
+                "front": "Penguin Sledding",
+                "rarity": "C"
+            }
+        }
+    },
+    "Jojo": {
+        "character": "Jojo",
+        "cards": {
+            "Massive Meteor": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 1
+                },
+                "intercept": 5,
+                "force": 7,
+                "text": "When you counterattack, eliminate one of our opponent's energy, and you add a red energy."
+            },
+            "Boulder Burst": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 4,
+                "text": "When you counterattack, your opponent eliminates one of his or her energy, and you add a green energy."
+            },
+            "Bucking Earth": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 2,
+                "text": "When you counterattack, you may move an ally to the top of its owner's deck."
+            },
+            "Rockslide": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "Yellow >>> When you counterattack, move an ally to the top of its owner's deck."
+            },
+            "Beguiling Kiss": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 7,
+                "text": "Whenever your opponent focuses in a zone, you add an energy of the same color as that zone."
+            }
+        },
+        "traits": ["FOX", "SPIRIT", "SHADOW", "EARTH"],
+        "chambers": {
+            "AME199": {
+                "back": "Beguiling Kiss",
+                "front": "Boulder Burst",
+                "rarity": "R"
+            },
+            "AME194": {
+                "back": "Rockslide",
+                "front": "Bucking Earth",
+                "rarity": "C"
+            },
+            "AME195": {
+                "back": "Rockslide",
+                "front": "Bucking Earth",
+                "rarity": "C"
+            },
+            "AME196": {
+                "back": "Massive Meteor",
+                "front": "Bucking Earth",
+                "rarity": "U"
+            },
+            "AME197": {
+                "back": "Rockslide",
+                "front": "Boulder Burst",
+                "rarity": "U"
+            },
+            "AME198": {
+                "back": "Massive Meteor",
+                "front": "Boulder Burst",
+                "rarity": "U"
+            }
+        }
+    },
+    "Afiko": {
+        "character": "Afiko",
+        "cards": {
+            "Suffocating Void": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 7,
+                "text": "-2 Intercept >>> When you counterattack, charge or uncharge any zone."
+            },
+            "Reaping Wind": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 4,
+                "force": 4,
+                "text": ""
+            },
+            "Storms Without End": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 1
+                },
+                "intercept": 6,
+                "force": 7,
+                "text": "When you clean up Storms Without End, leave your Chamber Card turned to the back."
+            },
+            "Tornado Punch": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 6,
+                "text": "-2 Intercept >>> When you couterattack, charge or uncharge any zone. Use only once."
+            },
+            "Dark Tempest": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 9,
+                "force": 6,
+                "text": "Eliminate one of your allies >>> When you counterattack, your opponent charges one of your zones."
+            }
+        },
+        "traits": ["LION", "SPIRIT", "EVIL", "AIR"],
+        "chambers": {
+            "AME221": {
+                "back": "Suffocating Void",
+                "front": "Tornado Punch",
+                "rarity": "U"
+            },
+            "AME222": {
+                "back": "Storms Without End",
+                "front": "Tornado Punch",
+                "rarity": "U"
+            },
+            "AME223": {
+                "back": "Dark Tempest",
+                "front": "Tornado Punch",
+                "rarity": "R"
+            },
+            "AME218": {
+                "back": "Suffocating Void",
+                "front": "Reaping Wind",
+                "rarity": "C"
+            },
+            "AME219": {
+                "back": "Suffocating Void",
+                "front": "Reaping Wind",
+                "rarity": "C"
+            },
+            "AME220": {
+                "back": "Storms Without End",
+                "front": "Reaping Wind",
+                "rarity": "U"
+            }
+        }
+    },
+    "Ice Attack Aang": {
+        "character": "Aang",
+        "cards": {
+            "Geyser Kick": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 4,
+                "text": "When you counterattack, each player charges his red zone."
+            },
+            "Icehammer": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 8,
+                "force": 7,
+                "text": "When you counterattack, each player chooses one of his zones. Charge that zone."
+            }
+        },
+        "traits": ["FOX", "SPIRIT", "GOOD", "WATER"],
+        "chambers": {
+            "FPR003": {
+                "back": "Icehammer",
+                "front": "Geyser Kick",
+                "rarity": "R"
+            }
+        }
+    },
+    "Malu": {
+        "character": "Malu",
+        "cards": {
+            "Shrieking Wind": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 5,
+                "text": "Your opponent skips defending in his or her green and yellow zones."
+            },
+            "Ankle-Breaking Gust": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 4,
+                "force": 4,
+                "text": "Yellow >>> +1 Force."
+            },
+            "Blustery Blast": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 5,
+                "text": "Your opponent skips defending in his or her green zone."
+            },
+            "Treetop Hop": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 8,
+                "force": 3,
+                "text": ""
+            },
+            "Slingshot Stream": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 1
+                },
+                "intercept": 9,
+                "force": 0,
+                "text": "When you counterattack, Slingshot Stream gets +X Force, where X is the Force of your opponent's strike."
+            }
+        },
+        "traits": ["LION", "BODY", "SHADOW", "AIR"],
+        "chambers": {
+            "AME200": {
+                "back": "Shrieking Wind",
+                "front": "Blustery Blast",
+                "rarity": "C"
+            },
+            "AME201": {
+                "back": "Shrieking Wind",
+                "front": "Blustery Blast",
+                "rarity": "C"
+            },
+            "AME202": {
+                "back": "Slingshot Stream",
+                "front": "Blustery Blast",
+                "rarity": "U"
+            },
+            "AME203": {
+                "back": "Shrieking Wind",
+                "front": "Treetop Hop",
+                "rarity": "U"
+            },
+            "AME204": {
+                "back": "Slingshot Stream",
+                "front": "Treetop Hop",
+                "rarity": "U"
+            },
+            "AME205": {
+                "back": "Ankle-Breaking Gust",
+                "front": "Treetop Hop",
+                "rarity": "R"
+            }
+        }
+    },
+    "Prince Zuko": {
+        "character": "Zuko",
+        "cards": {
+            "Night of Flames": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 9,
+                "force": 7,
+                "text": ""
+            },
+            "Burning in Exile": {
+                "cost": {
+                    "r": 0,
+                    "g": 2,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 5,
+                "text": "When you counterattack, you may uncharge any zone."
+            },
+            "Burning Spire": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 4,
+                "text": "When you counterattack, you may eliminate up to two energy."
+            },
+            "Immolating Spiral": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 4,
+                "text": "When you counterattack, you eliminate up to two energy."
+            },
+            "Meltdown": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 1,
+                "text": "When you counterattack, you may eliminate an energy."
+            }
+        },
+        "traits": ["BULL", "SPIRIT", "SHADOW", "FIRE"],
+        "chambers": {
+            "AME210": {
+                "back": "Immolating Spiral",
+                "front": "Burning in Exile",
+                "rarity": "U"
+            },
+            "AME211": {
+                "back": "Burning Spire",
+                "front": "Burning in Exile",
+                "rarity": "R"
+            },
+            "AME206": {
+                "back": "Night of Flames",
+                "front": "Meltdown",
+                "rarity": "C"
+            },
+            "AME207": {
+                "back": "Night of Flames",
+                "front": "Meltdown",
+                "rarity": "C"
+            },
+            "AME208": {
+                "back": "Immolating Spiral",
+                "front": "Meltdown",
+                "rarity": "U"
+            },
+            "AME209": {
+                "back": "Night of Flames",
+                "front": "Burning in Exile",
+                "rarity": "U"
+            }
+        }
+    },
+    "Fire Blast Zuko": {
+        "character": "Zuko",
+        "cards": {
+            "Target Practice": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 5,
+                "text": "When you counterattack, you may eliminate an ally."
+            },
+            "Fire Blast Snap-Kick": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 7,
+                "text": "When you counterattack, you may eliminate all of your opponent's allies."
+            }
+        },
+        "traits": ["BULL", "SPIRIT", "SHADOW", "FIRE"],
+        "chambers": {
+            "FPR002": {
+                "back": "Fire Blast Snap-Kick",
+                "front": "Target Practice",
+                "rarity": "R"
+            }
+        }
+    },
+    "Kinto": {
+        "character": "Kinto",
+        "cards": {
+            "Gutwrencher": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 2,
+                "text": "You opponent's strikes cost an additional yellow energy to play."
+            },
+            "Splash Rockets": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 7,
+                "text": "Green >>> +1 Intercept."
+            },
+            "High Seas": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 2
+                },
+                "intercept": 12,
+                "force": 0,
+                "text": "-1 Intercept >>> +1 Force"
+            },
+            "Steam Blast": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 8,
+                "force": 0,
+                "text": "-1 Intercept >>> +1 Force"
+            },
+            "Avalanche": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 8,
+                "force": 6,
+                "text": "-2 Intercept >>> Your opponent's strikes cost an additional yellow energy to play."
+            }
+        },
+        "traits": ["FOX", "BODY", "EVIL", "WATER"],
+        "chambers": {
+            "AME232": {
+                "back": "Avalanche",
+                "front": "Gutwrencher",
+                "rarity": "U"
+            },
+            "AME233": {
+                "back": "Splash Rockets",
+                "front": "Steam Blast",
+                "rarity": "U"
+            },
+            "AME234": {
+                "back": "Avalanche",
+                "front": "Steam Blast",
+                "rarity": "U"
+            },
+            "AME235": {
+                "back": "High Seas",
+                "front": "Steam Blast",
+                "rarity": "R"
+            },
+            "AME230": {
+                "back": "Splash Rockets",
+                "front": "Gutwrencher",
+                "rarity": "C"
+            },
+            "AME231": {
+                "back": "Splash Rockets",
+                "front": "Gutwrencher",
+                "rarity": "C"
+            }
+        }
+    },
+    "Katara": {
+        "character": "Katara",
+        "cards": {
+            "Parting Shot": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 2,
+                "text": "When you counterattack, add a red energy."
+            },
+            "Double Water Whip": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 7,
+                "text": "Green >>> When you counterattack, each player charges one of his or her zones."
+            },
+            "Whirlpool": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 7,
+                "text": "When you counterattack, charge your yellow zone."
+            },
+            "Arctic Sheath": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 4,
+                "text": "When you counterattack, charge your yellow zone."
+            },
+            "Geyser Torpedo": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "When you counterattack, add two red energy."
+            }
+        },
+        "traits": ["LION", "MIND", "GOOD", "WATER"],
+        "chambers": {
+            "AME182": {
+                "back": "Whirlpool",
+                "front": "Arctic Sheath",
+                "rarity": "C"
+            },
+            "AME183": {
+                "back": "Whirlpool",
+                "front": "Arctic Sheath",
+                "rarity": "C"
+            },
+            "AME184": {
+                "back": "Geyser Torpedo",
+                "front": "Arctic Sheath",
+                "rarity": "U"
+            },
+            "AME185": {
+                "back": "Whirlpool",
+                "front": "Parting Shot",
+                "rarity": "U"
+            },
+            "AME186": {
+                "back": "Geyser Torpedo",
+                "front": "Parting Shot",
+                "rarity": "U"
+            },
+            "AME187": {
+                "back": "Double Water Whip",
+                "front": "Parting Shot",
+                "rarity": "R"
+            }
+        }
+    },
+    "Air Cannon Aang": {
+        "character": "Aang",
+        "cards": {
+            "Air Cannon Riposte": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 1
+                },
+                "intercept": 6,
+                "force": 8,
+                "text": ""
+            },
+            "Airball Practice": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 5,
+                "text": "When you counterattack, you may search your deck for an ally card named Appa. You may put that card in any empty ally space."
+            }
+        },
+        "traits": ["FOX", "SPIRIT", "GOOD", "AIR"],
+        "chambers": {
+            "FPR001": {
+                "back": "Air Cannon Riposte",
+                "front": "Airball Practice",
+                "rarity": "R"
+            }
+        }
+    },
+    "Commander Zhao": {
+        "character": "Zhao",
+        "cards": {
+            "Open Fire!": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "When you counterattack against a strike that has 3 Force or less, Open Fire! gets +3 force."
+            },
+            "Fiery Lash": {
+                "cost": {
+                    "r": 1,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "When you counterattack, you may eliminate an ally."
+            },
+            "No Mercy for the Weak": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 0
+                },
+                "intercept": 5,
+                "force": 4,
+                "text": "When you counterattack against a strike that has 3 Force or less, No Mercy for the Weak gets +3 force."
+            },
+            "Agni Kai": {
+                "cost": {
+                    "r": 0,
+                    "g": 0,
+                    "y": 1
+                },
+                "intercept": 6,
+                "force": 6,
+                "text": "Eliminate one of your allies >>> +1 Force."
+            },
+            "Roaring Sphere": {
+                "cost": {
+                    "r": 0,
+                    "g": 1,
+                    "y": 0
+                },
+                "intercept": 7,
+                "force": 6,
+                "text": "Green >>> When you counterattack, eliminate an ally."
+            }
+        },
+        "traits": ["BULL", "MIND", "EVIL", "FIRE"],
+        "chambers": {
+            "AME224": {
+                "back": "Open Fire!",
+                "front": "No Mercy for the Weak",
+                "rarity": "C"
+            },
+            "AME225": {
+                "back": "Open Fire!",
+                "front": "No Mercy for the Weak",
+                "rarity": "C"
+            },
+            "AME226": {
+                "back": "Roaring Sphere",
+                "front": "No Mercy for the Weak",
+                "rarity": "U"
+            },
+            "AME227": {
+                "back": "Open Fire!",
+                "front": "Fiery Lash",
+                "rarity": "U"
+            },
+            "AME228": {
+                "back": "Roaring Sphere",
+                "front": "Fiery Lash",
+                "rarity": "U"
+            },
+            "AME229": {
+                "back": "Agni Kai",
+                "front": "Fiery Lash",
+                "rarity": "R"
+            }
+        }
+    }
+}
