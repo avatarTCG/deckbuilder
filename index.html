@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Card Game Deck Builder</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+    <h1>Deck Builder</h1>
+</header>
+
+<main class="app">
+
+    <!-- =========================
+         CHAMBER
+         ========================= -->
+
+    <section class="chamber-section">
+
+        <h2>Chamber</h2>
+
+        <div id="chamber-selector">
+            <p>Loading Chambers...</p>
+        </div>
+
+        <div id="selected-chamber"></div>
+
+    </section>
+
+
+    <!-- =========================
+         DECK
+         ========================= -->
+
+    <section class="deck-section">
+
+        <div class="deck-header">
+
+            <h2>Deck</h2>
+
+            <div id="deck-count">
+                0 cards
+            </div>
+
+        </div>
+
+        <div id="deck-validation"></div>
+
+        <div id="deck-list">
+            <p>Your deck is empty.</p>
+        </div>
+
+        <div class="deck-actions">
+
+            <button id="clear-deck">
+                Clear Deck
+            </button>
+
+            <button id="save-deck">
+                Save Deck
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         CARD BROWSER
+         ========================= -->
+
+    <section class="card-browser">
+
+        <div class="browser-header">
+
+            <h2>Cards</h2>
+
+            <div class="filters">
+
+                <input
+                        type="search"
+                        id="search"
+                        placeholder="Search cards..."
+                >
+
+                <select id="type-filter">
+                    <option value="">All Types</option>
+                </select>
+
+                <select id="trait-filter">
+                    <option value="">All Traits</option>
+                </select>
+
+                <select id="rarity-filter">
+                    <option value="">All Rarities</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        <div id="card-grid" class="card-grid">
+            <p>Loading cards...</p>
+        </div>
+
+    </section>
+
+</main>
+
+<script src="deckbuilder.js"></script>
+
+</body>
+</html>
