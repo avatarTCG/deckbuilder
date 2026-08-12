@@ -783,10 +783,8 @@ function loadSavedDeck() {
 
 
     try {
-
         const parsed =
             JSON.parse(saved);
-
 
         if (
             parsed &&
@@ -796,7 +794,13 @@ function loadSavedDeck() {
         ) {
 
             deck = {
-                chamber: parsed.chamber || null,
+                chamber:
+                    parsed.chamber &&
+                    parsed.chamber.character &&
+                    parsed.chamber.id
+                        ? parsed.chamber
+                        : null,
+
                 cards: parsed.cards
             };
 

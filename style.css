@@ -74,6 +74,33 @@ body {
     background: #fafafa;
 }
 
+.chamber-preview {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+
+.chamber-side {
+    width: 250px;
+}
+
+
+.chamber-side img {
+    width: 100%;
+    display: block;
+}
+
+
+.chamber-side img:first-child {
+    border-radius: 6px 6px 0 0;
+}
+
+
+.chamber-side img:last-child {
+    border-radius: 0 0 6px 6px;
+}
+
 
 /* =========================
    DECK
