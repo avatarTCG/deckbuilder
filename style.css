@@ -29,6 +29,14 @@ body {
    CHAMBER
    ========================= */
 
+/* Character selector row */
+.character-selector {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 8px;
+   margin-bottom: 20px;
+}
+
 .chamber-section {
     background: white;
     padding: 20px;
@@ -41,9 +49,7 @@ body {
 }
 
 #chamber-selector {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    display: block;
 }
 
 .chamber-button {
@@ -80,25 +86,61 @@ body {
     margin-top: 20px;
 }
 
-
 .chamber-side {
     width: 250px;
 }
-
 
 .chamber-side img {
     width: 100%;
     display: block;
 }
 
-
 .chamber-side img:first-child {
     border-radius: 6px 6px 0 0;
 }
 
-
 .chamber-side img:last-child {
     border-radius: 0 0 6px 6px;
+}
+
+/* Chamber cards underneath */
+.chamber-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    margin-top: 15px;
+}
+
+.mini-chamber {
+
+    width: 120px;
+
+}
+
+
+.mini-chamber img {
+
+    width: 100%;
+
+    display: block;
+
+}
+
+
+.chamber-choice {
+
+    cursor: pointer;
+
+    border: 2px solid #ccc;
+
+    border-radius: 8px;
+
+    padding: 8px;
+
+}
+
+.chamber-choice.selected {
+    outline: 3px solid black;
 }
 
 

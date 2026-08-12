@@ -6,6 +6,7 @@ const CARD_DATA_URL = "data/cards.json";
 const CHAMBER_DATA_URL = "data/chambers.json";
 
 const CARD_IMAGE_PATH = "images/cards/";
+const CHAMBER_IMAGE_PATH = "images/chambers/"
 
 const MAX_COPIES = 4;
 const MIN_DECK_SIZE = 60;
@@ -19,6 +20,8 @@ const STORAGE_KEY = "card-game-deck";
 
 let cards = {};
 let chambers = {};
+
+let selectedChamberCharacter = null;
 
 let deck = {
     chamber: null,
@@ -570,67 +573,186 @@ function renderChambers() {
     element.innerHTML = "";
 
 
+    const characterButtons =
+        document.createElement("div");
+
+    characterButtons.className =
+        "character-selector";
+
+
     Object.entries(chambers)
         .forEach(([characterKey, chamber]) => {
 
-            const characterSection =
-                document.createElement("div");
+            const button =
+                document.createElement("button");
 
-            const title =
-                document.createElement("h3");
+            button.className =
+                "chamber-button";
 
-            title.textContent =
+            button.textContent =
                 chamber.name;
 
-            characterSection.appendChild(title);
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    selectedChamberCharacter =
+                        characterKey;
+
+                    renderChambers();
+
+                }
+            );
 
 
-            Object.entries(chamber.chambers)
-                .forEach(([id, chamberCard]) => {
-
-                    const button =
-                        document.createElement("button");
-
-                    button.className =
-                        "chamber-button";
-
-                    button.textContent =
-                        id;
-
-
-                    if (
-                        deck.chamber &&
-                        deck.chamber.character === characterKey &&
-                        deck.chamber.id === id
-                    ) {
-
-                        button.classList.add("selected");
-
-                    }
-
-
-                    button.addEventListener(
-                        "click",
-                        () => {
-                            selectChamber(
-                                characterKey,
-                                id
-                            );
-                        }
-                    );
-
-
-                    characterSection.appendChild(button);
-
-                });
-
-
-            element.appendChild(characterSection);
+            characterButtons.appendChild(button);
 
         });
 
 
-    renderSelectedChamber();
+    element.appendChild(characterButtons);
+
+
+
+    if (!selectedChamberCharacter) {
+
+        return;
+
+    }
+
+
+
+    const selected =
+        chambers[selectedChamberCharacter];
+
+
+    const title =
+        document.createElement("h3");
+
+    title.textContent =
+        `${selected.name} Chambers`;
+
+    element.appendChild(title);
+
+
+
+    const grid =
+        document.createElement("div");
+
+    grid.className =
+        "chamber-grid";
+
+
+
+    Object.entries(selected.chambers)
+        .forEach(([id, chamberCard]) => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "chamber-choice";
+
+
+            if (
+                deck.chamber &&
+                deck.chamber.character === selectedChamberCharacter &&
+                deck.chamber.id === id
+            ) {
+                card.classList.add("selected");
+            }
+
+
+            card.appendChild(
+                createChamberPreview(
+                    selectedChamberCharacter,
+                    id
+                )
+            );
+
+
+            const label =
+                document.createElement("div");
+
+            label.textContent =
+                id;
+
+            card.appendChild(label);
+
+
+
+            card.addEventListener(
+                "click",
+                () => {
+
+                    selectChamber(
+                        selectedChamberCharacter,
+                        id
+                    );
+
+                }
+            );
+
+
+            grid.appendChild(card);
+
+        });
+
+
+    element.appendChild(grid);
+
+}
+
+function createChamberPreview(
+    characterKey,
+    chamberId,
+    side = "front"
+) {
+
+    const chamber =
+        chambers[characterKey]
+            .chambers[chamberId];
+
+
+    const container =
+        document.createElement("div");
+
+    container.className =
+        "mini-chamber";
+
+
+    const top =
+        document.createElement("img");
+
+    const bottom =
+        document.createElement("img");
+
+
+    if (side === "front") {
+
+        top.src =
+            `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.front}.png`;
+
+        bottom.src =
+            `${CHAMBER_IMAGE_PATH}${characterKey}/Front.png`;
+
+    } else {
+
+        top.src =
+            `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.back}.png`;
+
+        bottom.src =
+            `${CHAMBER_IMAGE_PATH}${characterKey}/Back.png`;
+
+    }
+
+
+    container.appendChild(top);
+    container.appendChild(bottom);
+
+
+    return container;
 }
 
 
