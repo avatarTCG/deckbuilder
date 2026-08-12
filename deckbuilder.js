@@ -571,32 +571,61 @@ function renderChambers() {
 
 
     Object.entries(chambers)
-        .forEach(([name, chamber]) => {
+        .forEach(([characterKey, chamber]) => {
 
-            const button =
-                document.createElement("button");
+            const characterSection =
+                document.createElement("div");
 
-            button.className =
-                "chamber-button";
+            const title =
+                document.createElement("h3");
 
-            button.textContent =
-                name;
+            title.textContent =
+                chamber.name;
 
-
-            if (deck.chamber === name) {
-
-                button.classList.add("selected");
-
-            }
+            characterSection.appendChild(title);
 
 
-            button.addEventListener(
-                "click",
-                () => selectChamber(name)
-            );
+            Object.entries(chamber.chambers)
+                .forEach(([id, chamberCard]) => {
+
+                    const button =
+                        document.createElement("button");
+
+                    button.className =
+                        "chamber-button";
+
+                    button.textContent =
+                        id;
 
 
-            element.appendChild(button);
+                    if (
+                        deck.chamber &&
+                        deck.chamber.character === characterKey &&
+                        deck.chamber.id === id
+                    ) {
+
+                        button.classList.add("selected");
+
+                    }
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+                            selectChamber(
+                                characterKey,
+                                id
+                            );
+                        }
+                    );
+
+
+                    characterSection.appendChild(button);
+
+                });
+
+
+            element.appendChild(characterSection);
 
         });
 
@@ -605,10 +634,12 @@ function renderChambers() {
 }
 
 
-function selectChamber(chamberName) {
+function selectChamber(characterKey, chamberId) {
 
-    deck.chamber =
-        chamberName;
+    deck.chamber = {
+        character: characterKey,
+        id: chamberId
+    };
 
 
     renderChambers();
@@ -631,19 +662,18 @@ function renderSelectedChamber() {
     }
 
 
-    const chamber =
-        chambers[deck.chamber];
+    const character =
+        chambers[deck.chamber.character];
 
 
-    if (!chamber) {
-        return;
-    }
+    const chamberCard =
+        character.chambers[deck.chamber.id];
 
 
-    const info =
+    const container =
         document.createElement("div");
 
-    info.className =
+    container.className =
         "selected-chamber-info";
 
 
@@ -651,49 +681,80 @@ function renderSelectedChamber() {
         document.createElement("h3");
 
     title.textContent =
-        deck.chamber;
+        `${character.name} - ${deck.chamber.id}`;
 
 
-    const character =
-        document.createElement("p");
-
-    character.innerHTML =
-        `<strong>Character:</strong> ${chamber.character}`;
+    container.appendChild(title);
 
 
-    const traits =
-        document.createElement("p");
+    const preview =
+        document.createElement("div");
 
-    traits.innerHTML =
-        `<strong>Traits:</strong> ${chamber.traits.join(", ")}`;
-
-
-    info.appendChild(title);
-    info.appendChild(character);
-    info.appendChild(traits);
+    preview.className =
+        "chamber-preview";
 
 
-    const chamberList =
-        document.createElement("ul");
+    preview.appendChild(
+        createChamberSide(
+            deck.chamber.character,
+            chamberCard.front,
+            "Front"
+        )
+    );
 
 
-    Object.entries(chamber.chambers)
-        .forEach(([id, chamberCard]) => {
-
-            const item =
-                document.createElement("li");
-
-            item.textContent =
-                `${id}: ${chamberCard.front} / ${chamberCard.back}`;
-
-            chamberList.appendChild(item);
-
-        });
+    preview.appendChild(
+        createChamberSide(
+            deck.chamber.character,
+            chamberCard.back,
+            "Back"
+        )
+    );
 
 
-    info.appendChild(chamberList);
+    container.appendChild(preview);
 
-    element.appendChild(info);
+    element.appendChild(container);
+}
+
+function createChamberSide(
+    characterKey,
+    abilityName,
+    bottomName
+) {
+
+    const side =
+        document.createElement("div");
+
+    side.className =
+        "chamber-side";
+
+
+    const topImage =
+        document.createElement("img");
+
+    topImage.src =
+        `${CHAMBER_IMAGE_PATH}${characterKey}/${abilityName}.png`;
+
+    topImage.alt =
+        abilityName;
+
+
+    const bottomImage =
+        document.createElement("img");
+
+    bottomImage.src =
+        `${CHAMBER_IMAGE_PATH}${characterKey}/${bottomName}.png`;
+
+    bottomImage.alt =
+        bottomName;
+
+
+    side.appendChild(topImage);
+    side.appendChild(bottomImage);
+
+
+    return side;
 }
 
 
