@@ -1,6 +1,7 @@
 {
-    "Uncle Iroh": {
+    "IROH": {
         "character": "Iroh",
+        "name": "Uncle Iroh",
         "cards": {
             "Rain of Fire": {
                 "cost": {
@@ -87,8 +88,9 @@
             }
         }
     },
-    "King Bumi": {
+    "BUMI": {
         "character": "Bumi",
+        "name": "King Bumi",
         "cards": {
             "Omashu Dodgeball": {
                 "cost": {
@@ -175,8 +177,9 @@
             }
         }
     },
-    "Aang": {
+    "AANG": {
         "character": "Aang",
+        "name": "Aang",
         "cards": {
             "Updraft": {
                 "cost": {
@@ -263,8 +266,9 @@
             }
         }
     },
-    "Jojo": {
+    "JOJO": {
         "character": "Jojo",
+        "name": "Jojo",
         "cards": {
             "Massive Meteor": {
                 "cost": {
@@ -351,8 +355,9 @@
             }
         }
     },
-    "Afiko": {
+    "AFIKO": {
         "character": "Afiko",
+        "name": "Afiko",
         "cards": {
             "Suffocating Void": {
                 "cost": {
@@ -439,8 +444,9 @@
             }
         }
     },
-    "Ice Attack Aang": {
+    "AANG_ICE_ATTACK": {
         "character": "Aang",
+        "name": "Ice Attack Aang",
         "cards": {
             "Geyser Kick": {
                 "cost": {
@@ -472,8 +478,9 @@
             }
         }
     },
-    "Malu": {
+    "MALU": {
         "character": "Malu",
+        "name": "Malu",
         "cards": {
             "Shrieking Wind": {
                 "cost": {
@@ -560,8 +567,9 @@
             }
         }
     },
-    "Prince Zuko": {
+    "ZUKO": {
         "character": "Zuko",
+        "name": "Prince Zuko",
         "cards": {
             "Night of Flames": {
                 "cost": {
@@ -648,8 +656,9 @@
             }
         }
     },
-    "Fire Blast Zuko": {
+    "ZUKO_FIRE_BLAST": {
         "character": "Zuko",
+        "name": "Fire Blast Zuko",
         "cards": {
             "Target Practice": {
                 "cost": {
@@ -681,8 +690,9 @@
             }
         }
     },
-    "Kinto": {
+    "KINTO": {
         "character": "Kinto",
+        "name": "Kinto",
         "cards": {
             "Gutwrencher": {
                 "cost": {
@@ -769,8 +779,9 @@
             }
         }
     },
-    "Katara": {
+    "KATARA": {
         "character": "Katara",
+        "name": "Katara",
         "cards": {
             "Parting Shot": {
                 "cost": {
@@ -857,8 +868,9 @@
             }
         }
     },
-    "Air Cannon Aang": {
+    "AANG_AIR_CANNON": {
         "character": "Aang",
+        "name": "Air Cannon Aang",
         "cards": {
             "Air Cannon Riposte": {
                 "cost": {
@@ -890,8 +902,9 @@
             }
         }
     },
-    "Commander Zhao": {
+    "ZHAO": {
         "character": "Zhao",
+        "name": "Commander Zhao",
         "cards": {
             "Open Fire!": {
                 "cost": {
