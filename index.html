@@ -3,117 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Card Game Deck Builder</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-<header class="site-header">
+<header>
     <h1>Deck Builder</h1>
 </header>
 
-<main class="app">
-
-    <!-- =========================
-         CHAMBER
-         ========================= -->
-
-    <section class="chamber-section">
-
-        <h2>Chamber</h2>
-
-        <div id="chamber-selector">
-            <p>Loading Chambers...</p>
-        </div>
-
-        <div id="selected-chamber"></div>
-
+<main class="deckbuilder-layout">
+    <section class="available-panel">
+        <h2>Available Cards</h2>
+        <div id="available-cards" class="card-grid"></div>
     </section>
 
+    <aside class="right-column">
 
-    <!-- =========================
-         DECK
-         ========================= -->
+        <section class="info-panel">
+            <h2>Chamber / Deck Info</h2>
 
-    <section class="deck-section">
+            <div id="current-chamber">
+                <div id="selected-chamber"></div>
+                <div class="chamber-preview">
+                    <div>
+                        <h3>Front</h3>
+                        <img id="chamber-front">
+                    </div>
 
-        <div class="deck-header">
-
-            <h2>Deck</h2>
-
-            <div id="deck-count">
-                0 cards
+                    <div>
+                        <h3>Back</h3>
+                        <img id="chamber-back">
+                    </div>
+                </div>
             </div>
 
-        </div>
-
-        <div id="deck-validation"></div>
-
-        <div id="deck-list">
-            <p>Your deck is empty.</p>
-        </div>
-
-        <div class="deck-actions">
-
-            <button id="clear-deck">
-                Clear Deck
-            </button>
-
-            <button id="save-deck">
-                Save Deck
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         CARD BROWSER
-         ========================= -->
-
-    <section class="card-browser">
-
-        <div class="browser-header">
-
-            <h2>Cards</h2>
-
-            <div class="filters">
-
-                <input
-                        type="search"
-                        id="search"
-                        placeholder="Search cards..."
-                >
-
-                <select id="type-filter">
-                    <option value="">All Types</option>
-                </select>
-
-                <select id="trait-filter">
-                    <option value="">All Traits</option>
-                </select>
-
-                <select id="rarity-filter">
-                    <option value="">All Rarities</option>
-                </select>
-
+            <div id="deck-information">
+                <p>
+                    Deck Size:
+                    <span id="deck-count">0</span>
+                    / 60
+                </p>
+                <div id="deck-validation"></div>
             </div>
+        </section>
 
-        </div>
-
-        <div id="card-grid" class="card-grid">
-            <p>Loading cards...</p>
-        </div>
-
-    </section>
-
+        <section class="deck-panel">
+            <h2>Cards in Deck</h2>
+            <p>
+                <span id="deck-card-count">0</span>
+                / 60 cards
+            </p>
+            <div id="deck-cards" class="card-grid"></div>
+        </section>
+    </aside>
 </main>
 
 <script src="deckbuilder.js"></script>
-
 </body>
 </html>

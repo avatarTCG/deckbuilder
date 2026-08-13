@@ -5,14 +5,15 @@
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: #f2f2f2;
-    color: #222;
+    background: #121212;
+    color: #e0e0e0;
 }
 
 .site-header {
-    background: #222;
-    color: white;
+    background: #1b1b1b;
+    color: #ffffff;
     padding: 16px 24px;
+    border-bottom: 1px solid #333;
 }
 
 .site-header h1 {
@@ -23,6 +24,52 @@ body {
     max-width: 1600px;
     margin: 0 auto;
     padding: 20px;
+}
+
+button {
+    background: #333;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #444;
+}
+
+/* =========================
+MAIN LAYOUT
+========================= */
+
+.deckbuilder-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.available-panel {
+    min-width: 0;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-panel,
+.deck-panel {
+    background: #1e1e1e;
+    padding: 20px;
+    border: 1px solid #333;
+    border-radius: 8px;
+}
+
+.info-panel h2,
+.deck-panel h2 {
+    margin-top: 0;
 }
 
 /* =========================
@@ -38,10 +85,11 @@ body {
 }
 
 .chamber-section {
-    background: white;
+    background: #1e1e1e;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px;
+    border: 1px solid #333;
 }
 
 .chamber-section h2 {
@@ -54,14 +102,15 @@ body {
 
 .chamber-button {
     padding: 8px 12px;
-    border: 1px solid #aaa;
+    border: 1px solid #555;
     border-radius: 5px;
-    background: white;
+    background: #333;
+    color: #eee;
     cursor: pointer;
 }
 
 .chamber-button:hover {
-    background: #eee;
+    background: #444;
 }
 
 .chamber-button.selected {
@@ -75,9 +124,9 @@ body {
 
 .selected-chamber-info {
     padding: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
     border-radius: 6px;
-    background: #fafafa;
+    background: #252525;
 }
 
 .chamber-preview {
@@ -112,31 +161,20 @@ body {
 }
 
 .mini-chamber {
-
     width: 120px;
-
 }
-
 
 .mini-chamber img {
-
     width: 100%;
-
     display: block;
-
 }
 
-
 .chamber-choice {
-
     cursor: pointer;
-
-    border: 2px solid #ccc;
-
+    border: 2px solid #555;
     border-radius: 8px;
-
     padding: 8px;
-
+    background: #1e1e1e;
 }
 
 .chamber-choice.selected {
@@ -149,10 +187,11 @@ body {
    ========================= */
 
 .deck-section {
-    background: white;
+    background: #1e1e1e;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px;
+    border: 1px solid #333;
 }
 
 .deck-header {
@@ -172,6 +211,7 @@ body {
 
 #deck-validation {
     margin: 10px 0;
+    color: #bbb;
 }
 
 .validation-valid {
@@ -216,15 +256,36 @@ body {
     cursor: pointer;
 }
 
+.deck-panel .deck-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.deck-panel .deck-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.deck-panel .quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
 
 /* =========================
    CARD BROWSER
    ========================= */
 
 .card-browser {
-    background: white;
+    background: #1e1e1e;
     padding: 20px;
     border-radius: 8px;
+    border: 1px solid #333;
 }
 
 .browser-header {
@@ -245,6 +306,10 @@ body {
 .filters select {
     padding: 8px;
     font-size: 1rem;
+    background: #222;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 4px;
 }
 
 #search {
@@ -270,6 +335,7 @@ body {
 
 .card:hover {
     transform: scale(1.03);
+    filter: brightness(1.15);
 }
 
 .card img {
@@ -299,15 +365,44 @@ body {
     font-weight: bold;
 }
 
+/* =========================
+CARDS IN DECK
+========================= */
+
+.deck-panel .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.deck-panel .card {
+    cursor: default;
+}
+
+.deck-card-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.deck-card-controls button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
 
 /* =========================
    MOBILE
    ========================= */
 
 @media (max-width: 700px) {
-
     .app {
         padding: 10px;
+    }
+
+    .deckbuilder-layout {
+        grid-template-columns: 1fr;
     }
 
     .card-grid {

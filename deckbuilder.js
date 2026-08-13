@@ -25,7 +25,6 @@ let selectedChamberCharacter = null;
 
 let deck = {
     chamber: null,
-
     cards: {}
 };
 
@@ -35,31 +34,20 @@ let deck = {
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
-
     setupEventListeners();
-
     loadSavedDeck();
 
     try {
-
         await loadCardData();
         await loadChamberData();
-
-        populateFilters();
 
         renderChambers();
         renderCards();
         renderDeck();
-
     } catch (error) {
-
         console.error(error);
-
-        document.getElementById("card-grid").innerHTML =
-            "<p>Unable to load card data.</p>";
-
+        document.getElementById("available-cards").innerHTML = "<p>Unable to load card data.</p>";
     }
-
 });
 
 
@@ -68,29 +56,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ============================================================
 
 async function loadCardData() {
-
     const response = await fetch(CARD_DATA_URL);
-
     if (!response.ok) {
         throw new Error("Unable to load cards.json");
     }
 
     cards = await response.json();
-
     console.log("Loaded cards:", Object.keys(cards).length);
 }
 
 
 async function loadChamberData() {
-
     const response = await fetch(CHAMBER_DATA_URL);
-
     if (!response.ok) {
         throw new Error("Unable to load chambers.json");
     }
 
     chambers = await response.json();
-
     console.log(
         "Loaded chambers:",
         Object.keys(chambers).length
@@ -104,29 +86,6 @@ async function loadChamberData() {
 
 function setupEventListeners() {
 
-    document
-        .getElementById("search")
-        .addEventListener("input", renderCards);
-
-    document
-        .getElementById("type-filter")
-        .addEventListener("change", renderCards);
-
-    document
-        .getElementById("trait-filter")
-        .addEventListener("change", renderCards);
-
-    document
-        .getElementById("rarity-filter")
-        .addEventListener("change", renderCards);
-
-    document
-        .getElementById("clear-deck")
-        .addEventListener("click", clearDeck);
-
-    document
-        .getElementById("save-deck")
-        .addEventListener("click", saveDeck);
 }
 
 
@@ -135,13 +94,11 @@ function setupEventListeners() {
 // ============================================================
 
 function populateFilters() {
-
     const types = new Set();
     const traits = new Set();
     const rarities = new Set();
 
     Object.values(cards).forEach(card => {
-
         if (card.type) {
             types.add(card.type);
         }
@@ -153,7 +110,6 @@ function populateFilters() {
         if (card.rarity) {
             rarities.add(card.rarity);
         }
-
     });
 
     populateSelect("type-filter", types);
@@ -163,20 +119,17 @@ function populateFilters() {
 
 
 function populateSelect(elementId, values) {
-
     const select = document.getElementById(elementId);
 
     [...values]
         .sort()
         .forEach(value => {
-
             const option = document.createElement("option");
 
             option.value = value;
             option.textContent = value;
 
             select.appendChild(option);
-
         });
 }
 
@@ -186,124 +139,49 @@ function populateSelect(elementId, values) {
 // ============================================================
 
 function renderCards() {
-
-    const grid = document.getElementById("card-grid");
-
-    const search =
-        document
-            .getElementById("search")
-            .value
-            .trim()
-            .toLowerCase();
-
-    const type =
-        document.getElementById("type-filter").value;
-
-    const trait =
-        document.getElementById("trait-filter").value;
-
-    const rarity =
-        document.getElementById("rarity-filter").value;
-
+    const grid = document.getElementById("available-cards");
 
     grid.innerHTML = "";
 
-
     Object.entries(cards)
-        .filter(([id, card]) => {
-
-            if (
-                search &&
-                !card.name.toLowerCase().includes(search) &&
-                !id.toLowerCase().includes(search)
-            ) {
-                return false;
-            }
-
-            if (type && card.type !== type) {
-                return false;
-            }
-
-            if (trait && card.trait !== trait) {
-                return false;
-            }
-
-            if (rarity && card.rarity !== rarity) {
-                return false;
-            }
-
-            return true;
-
-        })
         .forEach(([id, card]) => {
-
             const element = createCardElement(id, card);
-
             grid.appendChild(element);
-
         });
 
-
     if (grid.children.length === 0) {
-
-        grid.innerHTML =
-            "<p>No cards match your filters.</p>";
-
+        grid.innerHTML = "<p>No cards available.</p>";
     }
 }
 
 
 function createCardElement(id, card) {
-
     const container = document.createElement("div");
-
     container.className = "card";
-
     container.title = card.name;
 
-
     const image = document.createElement("img");
-
-    image.src =
-        `${CARD_IMAGE_PATH}${id}.png`;
-
+    image.src = `${CARD_IMAGE_PATH}${id}.png`;
     image.alt = card.name;
-
     image.loading = "lazy";
 
-
     image.onerror = () => {
-
         image.alt = `${card.name} - image not found`;
-
     };
-
 
     container.appendChild(image);
 
-
     const quantity = deck.cards[id] || 0;
-
     if (quantity > 0) {
-
-        const quantityElement =
-            document.createElement("div");
-
-        quantityElement.className =
-            "card-quantity";
-
-        quantityElement.textContent =
-            quantity;
+        const quantityElement = document.createElement("div");
+        quantityElement.className = "card-quantity";
+        quantityElement.textContent = quantity;
 
         container.appendChild(quantityElement);
-
     }
 
-
     container.addEventListener("click", () => {
-
         addCardToDeck(id);
-
     });
 
 
@@ -316,25 +194,15 @@ function createCardElement(id, card) {
 // ============================================================
 
 function addCardToDeck(cardId) {
-
-    const currentQuantity =
-        deck.cards[cardId] || 0;
-
+    const currentQuantity = deck.cards[cardId] || 0;
 
     if (currentQuantity >= MAX_COPIES) {
-
-        alert(
-            `You can only have ${MAX_COPIES} copies of a card.`
-        );
-
+        alert(`You can only have ${MAX_COPIES} copies of a card.`);
         return;
-
     }
 
 
-    deck.cards[cardId] =
-        currentQuantity + 1;
-
+    deck.cards[cardId] = currentQuantity + 1;
 
     renderDeck();
     renderCards();
@@ -344,22 +212,13 @@ function addCardToDeck(cardId) {
 
 
 function removeCardFromDeck(cardId) {
-
-    const currentQuantity =
-        deck.cards[cardId] || 0;
-
+    const currentQuantity = deck.cards[cardId] || 0;
 
     if (currentQuantity <= 1) {
-
         delete deck.cards[cardId];
-
     } else {
-
-        deck.cards[cardId] =
-            currentQuantity - 1;
-
+        deck.cards[cardId] = currentQuantity - 1;
     }
-
 
     renderDeck();
     renderCards();
@@ -373,173 +232,96 @@ function removeCardFromDeck(cardId) {
 // ============================================================
 
 function renderDeck() {
-
     renderDeckCount();
     renderDeckValidation();
     renderDeckList();
+    renderSelectedChamber();
 }
 
 
 function getDeckSize() {
-
     return Object.values(deck.cards)
-        .reduce(
-            (total, quantity) => total + quantity,
-            0
-        );
+        .reduce((total, quantity) => total + quantity, 0);
 }
 
 
 function renderDeckCount() {
-
-    const count =
-        getDeckSize();
-
-    document.getElementById("deck-count").textContent =
-        `${count} card${count === 1 ? "" : "s"}`;
+    const count = getDeckSize();
+    document.getElementById("deck-count").textContent = `${count} card${count === 1 ? "" : "s"}`;
 }
 
 
 function renderDeckValidation() {
-
-    const element =
-        document.getElementById("deck-validation");
-
-    const size =
-        getDeckSize();
-
+    const element = document.getElementById("deck-validation");
+    const size = getDeckSize();
     const messages = [];
 
-
     if (!deck.chamber) {
-
         messages.push("Select a Chamber.");
-
     }
 
-
     if (size < MIN_DECK_SIZE) {
-
-        messages.push(
-            `${MIN_DECK_SIZE - size} more cards needed.`
-        );
-
+        messages.push(`${MIN_DECK_SIZE - size} more cards needed.`);
     }
 
 
     if (messages.length === 0) {
-
-        element.className =
-            "validation-valid";
-
-        element.textContent =
-            "✓ Deck is valid.";
-
+        element.className = "validation-valid";
+        element.textContent = "✓ Deck is valid.";
     } else {
-
-        element.className =
-            "validation-invalid";
-
-        element.textContent =
-            messages.join(" ");
-
+        element.className = "validation-invalid";
+        element.textContent = messages.join(" ");
     }
 }
 
 
 function renderDeckList() {
-
-    const element =
-        document.getElementById("deck-list");
-
+    const element = document.getElementById("deck-cards");
     element.innerHTML = "";
 
-
-    const cardIds =
-        Object.keys(deck.cards);
-
+    const cardIds = Object.keys(deck.cards);
 
     if (cardIds.length === 0) {
-
-        element.innerHTML =
-            "<p>Your deck is empty.</p>";
-
+        element.innerHTML = "<p>Your deck is empty.</p>";
         return;
-
     }
-
 
     cardIds
         .sort((a, b) => {
-
-            const nameA =
-                cards[a]?.name || a;
-
-            const nameB =
-                cards[b]?.name || b;
+            const nameA = cards[a]?.name || a;
+            const nameB = cards[b]?.name || b;
 
             return nameA.localeCompare(nameB);
-
         })
         .forEach(cardId => {
-
-            const card =
-                cards[cardId];
-
+            const card = cards[cardId];
             if (!card) {
                 return;
             }
 
+            const row = document.createElement("div");
+            row.className = "deck-card";
 
-            const row =
-                document.createElement("div");
+            const image = document.createElement("img");
+            image.src = `images/cards/${cardId}.png`;
+            image.alt = card.name;
 
-            row.className =
-                "deck-card";
+            const controls = document.createElement("div");
+            controls.className = "quantity-controls";
 
-
-            const name =
-                document.createElement("div");
-
-            name.className =
-                "deck-card-name";
-
-            name.textContent =
-                card.name;
-
-
-            const controls =
-                document.createElement("div");
-
-            controls.className =
-                "quantity-controls";
-
-
-            const removeButton =
-                document.createElement("button");
-
-            removeButton.textContent =
-                "−";
-
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "−";
             removeButton.addEventListener(
                 "click",
                 () => removeCardFromDeck(cardId)
             );
 
 
-            const quantity =
-                document.createElement("span");
+            const quantity = document.createElement("span");
+            quantity.textContent = deck.cards[cardId];
 
-            quantity.textContent =
-                deck.cards[cardId];
-
-
-            const addButton =
-                document.createElement("button");
-
-            addButton.textContent =
-                "+";
-
+            const addButton = document.createElement("button");
+            addButton.textContent = "+";
             addButton.addEventListener(
                 "click",
                 () => addCardToDeck(cardId)
@@ -550,13 +332,10 @@ function renderDeckList() {
             controls.appendChild(quantity);
             controls.appendChild(addButton);
 
-
-            row.appendChild(name);
+            row.appendChild(image);
             row.appendChild(controls);
 
-
             element.appendChild(row);
-
         });
 }
 
@@ -566,203 +345,38 @@ function renderDeckList() {
 // ============================================================
 
 function renderChambers() {
-
-    const element =
-        document.getElementById("chamber-selector");
-
-    element.innerHTML = "";
-
-
-    const characterButtons =
-        document.createElement("div");
-
-    characterButtons.className =
-        "character-selector";
-
-
-    Object.entries(chambers)
-        .forEach(([characterKey, chamber]) => {
-
-            const button =
-                document.createElement("button");
-
-            button.className =
-                "chamber-button";
-
-            button.textContent =
-                chamber.name;
-
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    selectedChamberCharacter =
-                        characterKey;
-
-                    renderChambers();
-
-                }
-            );
-
-
-            characterButtons.appendChild(button);
-
-        });
-
-
-    element.appendChild(characterButtons);
-
-
-
-    if (!selectedChamberCharacter) {
-
-        return;
-
-    }
-
-
-
-    const selected =
-        chambers[selectedChamberCharacter];
-
-
-    const title =
-        document.createElement("h3");
-
-    title.textContent =
-        `${selected.name} Chambers`;
-
-    element.appendChild(title);
-
-
-
-    const grid =
-        document.createElement("div");
-
-    grid.className =
-        "chamber-grid";
-
-
-
-    Object.entries(selected.chambers)
-        .forEach(([id, chamberCard]) => {
-
-            const card =
-                document.createElement("div");
-
-            card.className =
-                "chamber-choice";
-
-
-            if (
-                deck.chamber &&
-                deck.chamber.character === selectedChamberCharacter &&
-                deck.chamber.id === id
-            ) {
-                card.classList.add("selected");
-            }
-
-
-            card.appendChild(
-                createChamberPreview(
-                    selectedChamberCharacter,
-                    id
-                )
-            );
-
-
-            const label =
-                document.createElement("div");
-
-            label.textContent =
-                id;
-
-            card.appendChild(label);
-
-
-
-            card.addEventListener(
-                "click",
-                () => {
-
-                    selectChamber(
-                        selectedChamberCharacter,
-                        id
-                    );
-
-                }
-            );
-
-
-            grid.appendChild(card);
-
-        });
-
-
-    element.appendChild(grid);
-
+    renderSelectedChamber();
 }
 
-function createChamberPreview(
-    characterKey,
-    chamberId,
-    side = "front"
-) {
+function createChamberPreview(characterKey, chamberId, side = "front") {
+    const chamber = chambers[characterKey].chambers[chamberId];
 
-    const chamber =
-        chambers[characterKey]
-            .chambers[chamberId];
+    const container = document.createElement("div");
+    container.className = "mini-chamber";
 
-
-    const container =
-        document.createElement("div");
-
-    container.className =
-        "mini-chamber";
-
-
-    const top =
-        document.createElement("img");
-
-    const bottom =
-        document.createElement("img");
-
+    const top = document.createElement("img");
+    const bottom = document.createElement("img");
 
     if (side === "front") {
-
-        top.src =
-            `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.front}.png`;
-
-        bottom.src =
-            `${CHAMBER_IMAGE_PATH}${characterKey}/Front.png`;
-
+        top.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.front}.png`;
+        bottom.src = `${CHAMBER_IMAGE_PATH}${characterKey}/Front.png`;
     } else {
-
-        top.src =
-            `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.back}.png`;
-
-        bottom.src =
-            `${CHAMBER_IMAGE_PATH}${characterKey}/Back.png`;
-
+        top.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.back}.png`;
+        bottom.src = `${CHAMBER_IMAGE_PATH}${characterKey}/Back.png`;
     }
-
 
     container.appendChild(top);
     container.appendChild(bottom);
-
 
     return container;
 }
 
 
 function selectChamber(characterKey, chamberId) {
-
     deck.chamber = {
         character: characterKey,
         id: chamberId
     };
-
 
     renderChambers();
     renderDeck();
@@ -772,49 +386,26 @@ function selectChamber(characterKey, chamberId) {
 
 
 function renderSelectedChamber() {
-
-    const element =
-        document.getElementById("selected-chamber");
-
+    const element = document.getElementById("selected-chamber");
     element.innerHTML = "";
-
 
     if (!deck.chamber) {
         return;
     }
 
+    const character = chambers[deck.chamber.character];
+    const chamberCard = character.chambers[deck.chamber.id];
 
-    const character =
-        chambers[deck.chamber.character];
+    const container = document.createElement("div");
+    container.className = "selected-chamber-info";
 
-
-    const chamberCard =
-        character.chambers[deck.chamber.id];
-
-
-    const container =
-        document.createElement("div");
-
-    container.className =
-        "selected-chamber-info";
-
-
-    const title =
-        document.createElement("h3");
-
-    title.textContent =
-        `${character.name} - ${deck.chamber.id}`;
-
+    const title = document.createElement("h3");
+    title.textContent = `${character.name} - ${deck.chamber.id}`;
 
     container.appendChild(title);
 
-
-    const preview =
-        document.createElement("div");
-
-    preview.className =
-        "chamber-preview";
-
+    const preview = document.createElement("div");
+    preview.className = "chamber-preview";
 
     preview.appendChild(
         createChamberSide(
@@ -824,7 +415,6 @@ function renderSelectedChamber() {
         )
     );
 
-
     preview.appendChild(
         createChamberSide(
             deck.chamber.character,
@@ -833,48 +423,25 @@ function renderSelectedChamber() {
         )
     );
 
-
     container.appendChild(preview);
 
     element.appendChild(container);
 }
 
-function createChamberSide(
-    characterKey,
-    abilityName,
-    bottomName
-) {
+function createChamberSide(characterKey, abilityName, bottomName) {
+    const side = document.createElement("div");
+    side.className = "chamber-side";
 
-    const side =
-        document.createElement("div");
+    const topImage = document.createElement("img");
+    topImage.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${abilityName}.png`;
+    topImage.alt = abilityName;
 
-    side.className =
-        "chamber-side";
-
-
-    const topImage =
-        document.createElement("img");
-
-    topImage.src =
-        `${CHAMBER_IMAGE_PATH}${characterKey}/${abilityName}.png`;
-
-    topImage.alt =
-        abilityName;
-
-
-    const bottomImage =
-        document.createElement("img");
-
-    bottomImage.src =
-        `${CHAMBER_IMAGE_PATH}${characterKey}/${bottomName}.png`;
-
-    bottomImage.alt =
-        bottomName;
-
+    const bottomImage = document.createElement("img");
+    bottomImage.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${bottomName}.png`;
+    bottomImage.alt = bottomName;
 
     side.appendChild(topImage);
     side.appendChild(bottomImage);
-
 
     return side;
 }
@@ -885,7 +452,6 @@ function createChamberSide(
 // ============================================================
 
 function saveDeckToStorage() {
-
     localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(deck)
@@ -894,27 +460,19 @@ function saveDeckToStorage() {
 
 
 function loadSavedDeck() {
-
-    const saved =
-        localStorage.getItem(STORAGE_KEY);
-
-
+    const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) {
         return;
     }
 
-
     try {
-        const parsed =
-            JSON.parse(saved);
+        const parsed = JSON.parse(saved);
 
-        if (
-            parsed &&
+        if (parsed &&
             typeof parsed === "object" &&
             parsed.cards &&
             typeof parsed.cards === "object"
         ) {
-
             deck = {
                 chamber:
                     parsed.chamber &&
@@ -925,44 +483,29 @@ function loadSavedDeck() {
 
                 cards: parsed.cards
             };
-
         }
-
     } catch (error) {
-
-        console.error(
-            "Unable to load saved deck.",
-            error
-        );
+        console.error("Unable to load saved deck.", error);
 
     }
 }
 
 
 function saveDeck() {
-
     saveDeckToStorage();
-
     alert("Deck saved.");
 }
 
 
 function clearDeck() {
-
-    if (
-        !confirm(
-            "Are you sure you want to clear the deck?"
-        )
-    ) {
+    if (!confirm("Are you sure you want to clear the deck?")) {
         return;
     }
-
 
     deck = {
         chamber: null,
         cards: {}
     };
-
 
     saveDeckToStorage();
 
