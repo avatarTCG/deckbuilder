@@ -751,20 +751,36 @@ function addCardHoverPreview(image) {
 
         document.body.appendChild(preview);
 
-        const gap = 10;
-        const rect = image.getBoundingClientRect();
-                
-        let left = rect.right + gap;
+        preview.onload = () => {
+            if (!hovering) {
+                return;
+            }
 
-        // If the preview would extend past the right edge,
-        // put it to the left of the card instead.
-        if (left + preview.offsetWidth > window.innerWidth) {
-            left = rect.left - preview.offsetWidth - gap;
-        }
+            const gap = 10;
+            const rect = image.getBoundingClientRect();
 
-        preview.style.left = `${left}px`;
-        preview.style.top =
-            `${rect.top - (rect.height - preview.offsetHeight) / 2}px`;
+            let left = rect.right + gap;
+
+            if (left + preview.offsetWidth > window.innerWidth) {
+                left = rect.left - preview.offsetWidth - gap;
+            }
+
+            // Center vertically on the original card.
+            let top = rect.top + (rect.height - preview.offsetHeight) / 2;
+
+            // Only move upward if the bottom would be off-screen.
+            if (top + preview.offsetHeight > window.innerHeight - gap) {
+                top = window.innerHeight - preview.offsetHeight - gap;
+            }
+
+            // Don't allow the top to go off-screen.
+            if (top < gap) {
+                top = gap;
+            }
+
+            preview.style.left = `${left}px`;
+            preview.style.top = `${top}px`;
+        };
     }
 
     function startTimer() {

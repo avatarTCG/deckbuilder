@@ -413,12 +413,15 @@ MAIN LAYOUT
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 8px;
+    scrollbar-gutter: stable;
 }
 
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 16px;
+    align-items: start;
+    align-content: start;
 }
 
 #available-cards.chamber-grid {
@@ -482,10 +485,12 @@ CARDS IN DECK
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 8px;
+    scrollbar-gutter: stable;
 }
 
 .deck-panel .card-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    align-items: start;
 }
 
 .deck-panel .card {
