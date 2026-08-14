@@ -3,62 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Game Deck Builder</title>
+    <title>Choose Your Character</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 <header>
-    <h1>Deck Builder</h1>
+    <h1>Choose Your Character</h1>
 </header>
-
-<main class="deckbuilder-layout">
-    <section class="available-panel">
-        <h2>Available Cards</h2>
-        <div id="available-cards" class="card-grid"></div>
-    </section>
-
-    <aside class="right-column">
-
-        <section class="info-panel">
-            <h2>Chamber / Deck Info</h2>
-
-            <div id="current-chamber">
-                <div id="selected-chamber"></div>
-                <div class="chamber-preview">
-                    <div>
-                        <h3>Front</h3>
-                        <img id="chamber-front">
-                    </div>
-
-                    <div>
-                        <h3>Back</h3>
-                        <img id="chamber-back">
-                    </div>
-                </div>
-            </div>
-
-            <div id="deck-information">
-                <p>
-                    Deck Size:
-                    <span id="deck-count">0</span>
-                    / 60
-                </p>
-                <div id="deck-validation"></div>
-            </div>
-        </section>
-
-        <section class="deck-panel">
-            <h2>Cards in Deck</h2>
-            <p>
-                <span id="deck-card-count">0</span>
-                / 60 cards
-            </p>
-            <div id="deck-cards" class="card-grid"></div>
-        </section>
-    </aside>
+<main class="character-selection">
+    <div id="character-grid" class="character-grid"></div>
 </main>
-
-<script src="deckbuilder.js"></script>
+<script src="characterselect.js"></script>
 </body>
 </html>

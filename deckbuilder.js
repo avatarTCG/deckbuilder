@@ -12,6 +12,7 @@ const MAX_COPIES = 4;
 const MIN_DECK_SIZE = 60;
 
 const STORAGE_KEY = "card-game-deck";
+const SELECTED_CHARACTER_KEY = "selected-character";
 
 
 // ============================================================
@@ -35,12 +36,32 @@ let deck = {
 
 document.addEventListener("DOMContentLoaded", async () => {
     setupEventListeners();
+
+    const selectedCharacter = localStorage.getItem(SELECTED_CHARACTER_KEY);
+    if (!selectedCharacter) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    selectedChamberCharacter = selectedCharacter;
     loadSavedDeck();
 
     try {
         await loadCardData();
         await loadChamberData();
 
+        if (!chambers[selectedChamberCharacter]) {
+            localStorage.removeItem(SELECTED_CHARACTER_KEY);
+            window.location.href = "index.html";
+            return;
+        }
+
+        if (deck.chamber && deck.chamber.character !== selectedChamberCharacter) {
+            deck.chamber = null;
+            saveDeckToStorage();
+        }
+
+        initializeCardFilters();
         renderChambers();
         renderCards();
         renderDeck();
@@ -93,44 +114,105 @@ function setupEventListeners() {
 // Filters
 // ============================================================
 
-function populateFilters() {
-    const types = new Set();
-    const traits = new Set();
-    const rarities = new Set();
+const FILTER_TYPES = ["STRIKE", "ADVANTAGE", "ALLY"];
 
-    Object.values(cards).forEach(card => {
-        if (card.type) {
-            types.add(card.type);
-        }
+let selectedTypes = new Set(FILTER_TYPES);
+let selectedTraits = new Set();
 
-        if (card.trait) {
-            traits.add(card.trait);
-        }
 
-        if (card.rarity) {
-            rarities.add(card.rarity);
-        }
-    });
+function initializeCardFilters() {
+    selectedTypes = new Set(FILTER_TYPES);
+    selectedTraits = new Set();
 
-    populateSelect("type-filter", types);
-    populateSelect("trait-filter", traits);
-    populateSelect("rarity-filter", rarities);
+    const traitContainer = document.getElementById("trait-filters");
+    if (!traitContainer) {
+        return;
+    }
+
+    traitContainer.innerHTML = "";
+
+    const character = chambers[selectedChamberCharacter];
+    if (!character || !Array.isArray(character.traits)) {
+        return;
+    }
+
+    const traits = new Set(character.traits);
+
+    // NONE is always legal for the character.
+    traits.add("NONE");
+
+    // Include ZENEMENTAL only when this character has character-specific
+    // ZENEMENTAL cards in the card pool.
+    const hasZenementalCards = Object.values(cards).some(card =>
+        card.trait === "ZENEMENTAL" &&
+        card.character === character.character
+    );
+
+    if (hasZenementalCards) {
+        traits.add("ZENEMENTAL");
+    }
+
+    [...traits]
+        .sort()
+        .forEach(trait => {
+            selectedTraits.add(trait);
+
+            const label = document.createElement("label");
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "card-trait";
+            checkbox.value = trait;
+            checkbox.checked = true;
+
+            checkbox.addEventListener("change", () => {
+                if (checkbox.checked) {
+                    selectedTraits.add(trait);
+                } else {
+                    selectedTraits.delete(trait);
+                }
+
+                applyCardFilters();
+            });
+
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(` ${trait}`));
+
+            traitContainer.appendChild(label);
+        });
+
+    document
+        .querySelectorAll('input[name="card-type"]')
+        .forEach(checkbox => {
+            checkbox.checked = true;
+
+            checkbox.addEventListener("change", () => {
+                if (checkbox.checked) {
+                    selectedTypes.add(checkbox.value);
+                } else {
+                    selectedTypes.delete(checkbox.value);
+                }
+
+                applyCardFilters();
+            });
+        });
 }
 
 
-function populateSelect(elementId, values) {
-    const select = document.getElementById(elementId);
+function isCardVisible(card) {
+    if (!isCardAllowedForCharacter(card)) {
+        return false;
+    }
 
-    [...values]
-        .sort()
-        .forEach(value => {
-            const option = document.createElement("option");
+    if (!selectedTypes.has(card.type)) {
+        return false;
+    }
 
-            option.value = value;
-            option.textContent = value;
+    if (!selectedTraits.has(card.trait)) {
+        return false;
+    }
 
-            select.appendChild(option);
-        });
+    return true;
 }
 
 
@@ -141,9 +223,16 @@ function populateSelect(elementId, values) {
 function renderCards() {
     const grid = document.getElementById("available-cards");
 
+    grid.classList.remove("chamber-grid");
     grid.innerHTML = "";
 
+    const typeOrder = ["STRIKE", "ADVANTAGE", "ALLY"];
     Object.entries(cards)
+        .filter(([, card]) => isCardVisible(card))
+        .sort(([, cardA], [, cardB]) =>
+            typeOrder.indexOf(cardA.type) - typeOrder.indexOf(cardB.type) ||
+            cardA.name.localeCompare(cardB.name)
+        )
         .forEach(([id, card]) => {
             const element = createCardElement(id, card);
             grid.appendChild(element);
@@ -154,11 +243,31 @@ function renderCards() {
     }
 }
 
+function updateCardQuantity(cardId) {
+    const cardElement = document.querySelector(`[data-card-id="${cardId}"]`);
+
+    if (!cardElement) {
+        return;
+    }
+
+    const quantity = deck.cards[cardId] || 0;
+    const badge = cardElement.querySelector(".card-quantity");
+
+    if (badge) {
+        if(quantity > 0) {
+            badge.textContent = quantity;
+            badge.style.display = "flex";
+        } else {
+            badge.style.display = "none";
+        }
+    }
+}
 
 function createCardElement(id, card) {
     const container = document.createElement("div");
     container.className = "card";
     container.title = card.name;
+    container.dataset.cardId = id;
 
     const image = document.createElement("img");
     image.src = `${CARD_IMAGE_PATH}${id}.png`;
@@ -180,33 +289,62 @@ function createCardElement(id, card) {
         container.appendChild(quantityElement);
     }
 
-    container.addEventListener("click", () => {
+    container.addEventListener("click", (event) => {
+        event.preventDefault();
         addCardToDeck(id);
     });
-
 
     return container;
 }
 
+function isCardAllowedForCharacter(card) {
+    const character = chambers[selectedChamberCharacter];
+    if (!character || !Array.isArray(character.traits)) {
+        return false;
+    }
+
+    if (card.trait === "NONE") {
+        return true;
+    }
+
+    if (card.trait === "ZENEMENTAL") {
+        return card.character === character.character;
+    }
+
+    return character.traits.includes(card.trait);
+}
+
+function applyCardFilters() {
+    const grid = document.getElementById("available-cards");
+
+    Array.from(grid.children).forEach(element => {
+        const cardId = element.dataset.cardId;
+        const card = cards[cardId];
+
+        element.style.display = isCardVisible(card) ? "" : "none";
+    });
+}
 
 // ============================================================
 // Deck manipulation
 // ============================================================
 
 function addCardToDeck(cardId) {
-    const currentQuantity = deck.cards[cardId] || 0;
-
-    if (currentQuantity >= MAX_COPIES) {
-        alert(`You can only have ${MAX_COPIES} copies of a card.`);
+    const card = cards[cardId];
+    if (!card || !isCardAllowedForCharacter(card)) {
         return;
     }
 
+    const currentQuantity = deck.cards[cardId] || 0;
 
-    deck.cards[cardId] = currentQuantity + 1;
+    if (currentQuantity >= MAX_COPIES) {
+        deck.cards[cardId] = MAX_COPIES;
+    } else {
+        deck.cards[cardId] = currentQuantity + 1;
+    }
 
     renderDeck();
-    renderCards();
-
+    updateCardQuantity(cardId);
     saveDeckToStorage();
 }
 
@@ -221,8 +359,7 @@ function removeCardFromDeck(cardId) {
     }
 
     renderDeck();
-    renderCards();
-
+    updateCardQuantity(cardId);
     saveDeckToStorage();
 }
 
@@ -232,9 +369,8 @@ function removeCardFromDeck(cardId) {
 // ============================================================
 
 function renderDeck() {
-    renderDeckCount();
-    renderDeckValidation();
-    renderDeckList();
+    renderDeckCardCount();
+    renderDeckCardList();
     renderSelectedChamber();
 }
 
@@ -245,37 +381,12 @@ function getDeckSize() {
 }
 
 
-function renderDeckCount() {
+function renderDeckCardCount() {
     const count = getDeckSize();
-    document.getElementById("deck-count").textContent = `${count} card${count === 1 ? "" : "s"}`;
+    document.getElementById("deck-card-count").textContent = `${count}`;
 }
 
-
-function renderDeckValidation() {
-    const element = document.getElementById("deck-validation");
-    const size = getDeckSize();
-    const messages = [];
-
-    if (!deck.chamber) {
-        messages.push("Select a Chamber.");
-    }
-
-    if (size < MIN_DECK_SIZE) {
-        messages.push(`${MIN_DECK_SIZE - size} more cards needed.`);
-    }
-
-
-    if (messages.length === 0) {
-        element.className = "validation-valid";
-        element.textContent = "✓ Deck is valid.";
-    } else {
-        element.className = "validation-invalid";
-        element.textContent = messages.join(" ");
-    }
-}
-
-
-function renderDeckList() {
+function renderDeckCardList() {
     const element = document.getElementById("deck-cards");
     element.innerHTML = "";
 
@@ -287,12 +398,6 @@ function renderDeckList() {
     }
 
     cardIds
-        .sort((a, b) => {
-            const nameA = cards[a]?.name || a;
-            const nameB = cards[b]?.name || b;
-
-            return nameA.localeCompare(nameB);
-        })
         .forEach(cardId => {
             const card = cards[cardId];
             if (!card) {
@@ -306,11 +411,23 @@ function renderDeckList() {
             image.src = `images/cards/${cardId}.png`;
             image.alt = card.name;
 
+            addCardHoverPreview(image);
+
             const controls = document.createElement("div");
             controls.className = "quantity-controls";
 
             const removeButton = document.createElement("button");
-            removeButton.textContent = "−";
+            removeButton.type = "button";
+            if (deck.cards[cardId] === 1) {
+                //Trash can icon
+                removeButton.innerHTML = `
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 7h14M10 4h4l1 3H9l1-3zM7 7l1 13h8l1-13M10 10v7M14 10v7"/>
+                    </svg>
+                `;
+            } else {
+                removeButton.textContent = "−";
+            }
             removeButton.addEventListener(
                 "click",
                 () => removeCardFromDeck(cardId)
@@ -320,17 +437,20 @@ function renderDeckList() {
             const quantity = document.createElement("span");
             quantity.textContent = deck.cards[cardId];
 
+            const addWrapper = document.createElement("span");
+            addWrapper.className = "deck-card-add-wrapper";
+
             const addButton = document.createElement("button");
             addButton.textContent = "+";
-            addButton.addEventListener(
-                "click",
-                () => addCardToDeck(cardId)
-            );
+            addButton.type = "button";
+            addButton.disabled = deck.cards[cardId] >= MAX_COPIES;
 
+            addButton.addEventListener("click", () => addCardToDeck(cardId));
+            addWrapper.appendChild(addButton);
 
             controls.appendChild(removeButton);
             controls.appendChild(quantity);
-            controls.appendChild(addButton);
+            controls.appendChild(addWrapper);
 
             row.appendChild(image);
             row.appendChild(controls);
@@ -346,11 +466,51 @@ function renderDeckList() {
 
 function renderChambers() {
     renderSelectedChamber();
+
+    const heading = document.querySelector(".available-panel h2");
+    const grid = document.getElementById("available-cards");
+
+    if (!deck.chamber) {
+        heading.textContent = "Available Chambers";
+        renderAvailableChambers(grid);
+    } else {
+        heading.textContent = "Available Cards";
+        renderCards();
+    }
+}
+
+function renderAvailableChambers(element) {
+    element.innerHTML = "";
+    element.classList.add("chamber-grid");
+
+    const character = chambers[selectedChamberCharacter];
+    if (!character || !character.chambers) {
+        element.innerHTML = "<p>No chambers available.</p>";
+        return;
+    }
+
+    Object.keys(character.chambers).sort().forEach(chamberId => {
+        const choice = document.createElement("div");
+        choice.className = "chamber-choice";
+
+        if (deck.chamber && deck.chamber.id === chamberId) {
+            choice.classList.add("selected");
+        }
+
+        choice.title = `${character.name} - ${chamberId}`;
+        choice.appendChild(createChamberPreview(selectedChamberCharacter, chamberId, "front"));
+
+        const label = document.createElement("div");
+        label.textContent = chamberId;
+        choice.appendChild(label);
+
+        choice.addEventListener("click", () => selectChamber(selectedChamberCharacter, chamberId));
+        element.appendChild(choice);
+    });
 }
 
 function createChamberPreview(characterKey, chamberId, side = "front") {
     const chamber = chambers[characterKey].chambers[chamberId];
-
     const container = document.createElement("div");
     container.className = "mini-chamber";
 
@@ -365,87 +525,136 @@ function createChamberPreview(characterKey, chamberId, side = "front") {
         bottom.src = `${CHAMBER_IMAGE_PATH}${characterKey}/Back.png`;
     }
 
+    top.alt = chamber[side];
+    bottom.alt = side === "front" ? characterKey : `${characterKey} back`;
+
     container.appendChild(top);
     container.appendChild(bottom);
-
     return container;
 }
 
-
-function selectChamber(characterKey, chamberId) {
+function selectChamber(chamberId) {
     deck.chamber = {
-        character: characterKey,
-        id: chamberId
+        id: chamberId,
+        character: selectedChamberCharacter
     };
 
-    renderChambers();
-    renderDeck();
-
     saveDeckToStorage();
-}
 
+    renderSelectedChamber();
+    renderCards();
+}
 
 function renderSelectedChamber() {
     const element = document.getElementById("selected-chamber");
     element.innerHTML = "";
 
-    if (!deck.chamber) {
+    const character = chambers[selectedChamberCharacter];
+    if (!character) {
         return;
     }
 
-    const character = chambers[deck.chamber.character];
-    const chamberCard = character.chambers[deck.chamber.id];
-
-    const container = document.createElement("div");
-    container.className = "selected-chamber-info";
-
     const title = document.createElement("h3");
-    title.textContent = `${character.name} - ${deck.chamber.id}`;
-
-    container.appendChild(title);
+    title.textContent = character.name;
+    element.appendChild(title);
 
     const preview = document.createElement("div");
     preview.className = "chamber-preview";
 
-    preview.appendChild(
-        createChamberSide(
-            deck.chamber.character,
-            chamberCard.front,
-            "Front"
-        )
-    );
+    preview.appendChild(createClickableChamberImage(
+        `${CHAMBER_IMAGE_PATH}${selectedChamberCharacter}/Front.png`,
+        character.name
+    ));
 
-    preview.appendChild(
-        createChamberSide(
-            deck.chamber.character,
-            chamberCard.back,
-            "Back"
-        )
-    );
+    if (deck.chamber) {
+        const chamberCard = character.chambers[deck.chamber.id];
 
-    container.appendChild(preview);
+        if (chamberCard) {
+            preview.appendChild(createClickableChamberImage(
+                `${CHAMBER_IMAGE_PATH}${selectedChamberCharacter}/${chamberCard.front}.png`,
+                chamberCard.front
+            ));
 
-    element.appendChild(container);
+            preview.appendChild(createClickableChamberImage(
+                `${CHAMBER_IMAGE_PATH}${selectedChamberCharacter}/${chamberCard.back}.png`,
+                chamberCard.back
+            ));
+        }
+    }
+
+    element.appendChild(preview);
 }
 
-function createChamberSide(characterKey, abilityName, bottomName) {
-    const side = document.createElement("div");
-    side.className = "chamber-side";
+function createClickableChamberImage(src, alt) {
+    const container = document.createElement("div");
+    container.className = "chamber-side";
 
-    const topImage = document.createElement("img");
-    topImage.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${abilityName}.png`;
-    topImage.alt = abilityName;
+    const image = document.createElement("img");
+    image.src = src;
+    image.alt = alt;
+    image.classList.add("clickable");
 
-    const bottomImage = document.createElement("img");
-    bottomImage.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${bottomName}.png`;
-    bottomImage.alt = bottomName;
+    image.addEventListener("click", showAvailableChambers);
 
-    side.appendChild(topImage);
-    side.appendChild(bottomImage);
-
-    return side;
+    container.appendChild(image);
+    return container;
 }
 
+function showAvailableChambers() {
+    const heading = document.querySelector(".available-panel h2");
+    const grid = document.getElementById("available-cards");
+    grid.classList.add("chamber-grid");
+
+    heading.textContent = "Available Chambers";
+    grid.innerHTML = "";
+
+    const character = chambers[selectedChamberCharacter];
+
+    if (!character || !character.chambers) {
+        grid.innerHTML = "<p>No chambers available.</p>";
+        return;
+    }
+
+    Object.entries(character.chambers)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .forEach(([id, chamber]) => {
+            const element = createChamberChoice(
+                selectedChamberCharacter,
+                id,
+                chamber
+            );
+
+        grid.appendChild(element);
+    });
+}
+
+function createChamberChoice(characterKey, id, chamber) {
+    const element = document.createElement("div");
+    element.className = "chamber-choice";
+
+    if (deck.chamber?.id === id) {
+        element.classList.add("selected");
+    }
+
+    const front = document.createElement("img");
+    front.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.front}.png`;
+
+    const back = document.createElement("img");
+    back.src = `${CHAMBER_IMAGE_PATH}${characterKey}/${chamber.back}.png`;
+
+    const label = document.createElement("div");
+    label.textContent = id;
+
+    element.appendChild(front);
+    element.appendChild(back);
+    element.appendChild(label);
+
+    element.addEventListener("click", () => {
+        selectChamber(id);
+    });
+
+    return element;
+}
 
 // ============================================================
 // Local storage
@@ -512,4 +721,76 @@ function clearDeck() {
     renderChambers();
     renderDeck();
     renderCards();
+}
+
+function addCardHoverPreview(image) {
+    let hoverTimer = null;
+    let preview = null;
+    let hovering = false;
+
+    function hidePreview() {
+        if (hoverTimer) {
+            clearTimeout(hoverTimer);
+            hoverTimer = null;
+        }
+
+        if (preview) {
+            preview.remove();
+            preview = null;
+        }
+    }
+
+    function showPreview() {
+        if (!hovering || preview) {
+            return;
+        }
+
+        preview = document.createElement("img");
+        preview.src = image.src;
+        preview.className = "card-hover-preview";
+
+        document.body.appendChild(preview);
+
+        const gap = 10;
+        const rect = image.getBoundingClientRect();
+                
+        let left = rect.right + gap;
+
+        // If the preview would extend past the right edge,
+        // put it to the left of the card instead.
+        if (left + preview.offsetWidth > window.innerWidth) {
+            left = rect.left - preview.offsetWidth - gap;
+        }
+
+        preview.style.left = `${left}px`;
+        preview.style.top =
+            `${rect.top - (rect.height - preview.offsetHeight) / 2}px`;
+    }
+
+    function startTimer() {
+        clearTimeout(hoverTimer);
+
+        hoverTimer = setTimeout(() => {
+            hoverTimer = null;
+            showPreview();
+        }, 50);
+    }
+
+    image.addEventListener("mouseenter", () => {
+        hovering = true;
+        startTimer();
+    });
+
+    image.addEventListener("mousemove", () => {
+        if (!hovering || preview) {
+            return;
+        }
+
+        startTimer();
+    });
+
+    image.addEventListener("mouseleave", () => {
+        hovering = false;
+        hidePreview();
+    });
 }
