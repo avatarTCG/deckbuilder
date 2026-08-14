@@ -3,7 +3,7 @@
 // ============================================================
 
 const CARD_DATA_URL = "data/cards.json";
-const CHAMBER_DATA_URL = "data/chambers.json";
+const CHAMBER_DATA_URL = "data/characters.json";
 
 const CARD_IMAGE_PATH = "images/cards/";
 const CHAMBER_IMAGE_PATH = "images/chambers/"
