@@ -24,8 +24,20 @@ let cards = {};
 let chambers = {};
 
 let selectedChamberCharacter = null;
-let deckSort = "name";
-let deckSortAscending = true;
+const deckSortState = {
+    STRIKE: {
+        sort: "name",
+        ascending: true
+    },
+    ADVANTAGE: {
+        sort: "name",
+        ascending: true
+    },
+    ALLY: {
+        sort: "name",
+        ascending: true
+    }
+};
 
 const deckSectionOpen = {
     STRIKE: true,
@@ -440,6 +452,10 @@ function renderDeckCardList() {
         const section = document.createElement("section");
         section.className = "deck-type-section";
 
+        if (type === "STRIKE") {
+            section.classList.add("strike-section");
+        }
+
         const header = document.createElement("div");
         header.className = "deck-type-header";
         header.setAttribute("role", "button");
@@ -479,32 +495,52 @@ function renderDeckCardList() {
             const sortHeader = document.createElement("div");
             sortHeader.className = "deck-sort-header";
 
-            ["qty", "trait", "name", "cost"].forEach(sort => {
+            const sortColumns = [
+                ["qty", "Qty"],
+                ["trait", "Trait"],
+                ["name", "Name"],
+                ["cost", "Cost"]
+            ];
+
+            if (type === "STRIKE") {
+                sortColumns.push(
+                    ["intercept", "Intercept"],
+                    ["force", "Force"]
+                );
+            }
+
+            sortColumns.forEach(([sort, label]) => {
                 const button = document.createElement("button");
                 button.type = "button";
                 button.className = "deck-sort-button";
                 button.dataset.sort = sort;
-                button.textContent = sort === "qty" ? "Qty" :
-                    sort === "trait" ? "Trait" :
-                    sort === "cost" ? "Cost" : "Name";
+                button.textContent = label;
+
                 button.addEventListener("click", event => {
                     event.stopPropagation();
 
-                    if (deckSort === sort) {
-                        deckSortAscending = !deckSortAscending;
+                    const state = deckSortState[type];
+
+                    if (state.sort === sort) {
+                        state.ascending = !state.ascending;
                     } else {
-                        deckSort = sort;
-                        deckSortAscending = true;
+                        state.sort = sort;
+                        state.ascending = true;
                     }
 
                     renderDeckCardList();
                 });
+
                 sortHeader.appendChild(button);
             });
 
             section.appendChild(sortHeader);
 
             const cardList = [...typeCardIds];
+
+            const sortState = deckSortState[type];
+            const deckSort = sortState.sort;
+            const deckSortAscending = sortState.ascending;
 
             if (deckSort) {
                 cardList.sort((cardIdA, cardIdB) => {
@@ -513,15 +549,22 @@ function renderDeckCardList() {
                     let result;
 
                     if (deckSort === "qty") {
-                        result = deck.cards[cardIdA] - deck.cards[cardIdB] ||
+                        result =
+                            deck.cards[cardIdA] - deck.cards[cardIdB] ||
                             cardA.name.localeCompare(cardB.name);
+
                     } else if (deckSort === "cost") {
                         const costA = cardA.cost || {};
                         const costB = cardB.cost || {};
-                        result = (costA.g || 0) - (costB.g || 0) ||
-                            (costA.y || 0) - (costB.y || 0) ||
-                            (costA.r || 0) - (costB.r || 0) ||
+
+                        const sortCost = value => value === 0 ? Infinity : value;
+
+                        result =
+                            sortCost(costA.g || 0) - sortCost(costB.g || 0) ||
+                            sortCost(costA.y || 0) - sortCost(costB.y || 0) ||
+                            sortCost(costA.r || 0) - sortCost(costB.r || 0) ||
                             cardA.name.localeCompare(cardB.name);
+
                     } else if (deckSort === "trait") {
                         const traitA = cardA.trait || "NONE";
                         const traitB = cardB.trait || "NONE";
@@ -531,9 +574,23 @@ function renderDeckCardList() {
                         } else if (traitA !== "NONE" && traitB === "NONE") {
                             result = 1;
                         } else {
-                            result = traitA.localeCompare(traitB) ||
+                            result =
+                                traitA.localeCompare(traitB) ||
                                 cardA.name.localeCompare(cardB.name);
                         }
+
+                    } else if (deckSort === "intercept") {
+                        result =
+                            (cardA.intercept || 0) -
+                            (cardB.intercept || 0) ||
+                            cardA.name.localeCompare(cardB.name);
+
+                    } else if (deckSort === "force") {
+                        result =
+                            (cardA.force || 0) -
+                            (cardB.force || 0) ||
+                            cardA.name.localeCompare(cardB.name);
+
                     } else {
                         result = cardA.name.localeCompare(cardB.name);
                     }
@@ -544,6 +601,7 @@ function renderDeckCardList() {
 
             cardList.forEach(cardId => {
                 const card = cards[cardId];
+
                 const row = document.createElement("div");
                 row.className = "deck-card";
 
@@ -575,6 +633,7 @@ function renderDeckCardList() {
                 addButton.textContent = "+";
                 addButton.type = "button";
                 addButton.disabled = deck.cards[cardId] >= MAX_COPIES;
+
                 addButton.addEventListener(
                     "click",
                     () => addCardToDeck(cardId)
@@ -587,12 +646,26 @@ function renderDeckCardList() {
                 const trait = document.createElement("div");
                 trait.className = "deck-card-trait";
 
-                if (card.trait && card.trait !== "NONE") {
+                if (
+                    card.trait &&
+                    card.trait !== "NONE" &&
+                    card.trait !== "ZENEMENTAL"
+                ) {
                     const traitIcon = document.createElement("img");
-                    traitIcon.src = `${TRAIT_ICON_PATH}${card.trait}.png`;
+                    traitIcon.src =
+                        `${TRAIT_ICON_PATH}${card.trait}.png`;
                     traitIcon.alt = card.trait;
                     trait.appendChild(traitIcon);
                 }
+
+                const name = document.createElement("div");
+                name.className = "deck-card-name";
+                name.textContent = card.name;
+
+                addCardHoverPreview(
+                    name,
+                    `${CARD_IMAGE_PATH}${cardId}.png`
+                );
 
                 const cost = document.createElement("div");
                 cost.className = "deck-card-cost";
@@ -604,27 +677,39 @@ function renderDeckCardList() {
                 ];
 
                 costComponents.forEach(([component, color]) => {
-                    if (card.cost && Object.prototype.hasOwnProperty.call(card.cost, component)) {
+                    if (
+                        card.cost &&
+                        Object.prototype.hasOwnProperty.call(
+                            card.cost,
+                            component
+                        )
+                    ) {
                         const circle = document.createElement("span");
-                        circle.className = `deck-cost-circle deck-cost-${color}`;
+                        circle.className =
+                            `deck-cost-circle deck-cost-${color}`;
                         circle.textContent = card.cost[component];
                         cost.appendChild(circle);
                     }
                 });
 
-                const name = document.createElement("div");
-                name.className = "deck-card-name";
-                name.textContent = card.name;
-
-                addCardHoverPreview(
-                    name,
-                    `${CARD_IMAGE_PATH}${cardId}.png`
-                );
-
                 row.appendChild(controls);
                 row.appendChild(trait);
                 row.appendChild(name);
                 row.appendChild(cost);
+
+                if (type === "STRIKE") {
+                    const intercept = document.createElement("div");
+                    intercept.className = "deck-card-intercept";
+                    intercept.textContent = card.intercept ?? "";
+
+                    const force = document.createElement("div");
+                    force.className = "deck-card-force";
+                    force.textContent = card.force ?? "";
+
+                    row.appendChild(intercept);
+                    row.appendChild(force);
+                }
+
                 section.appendChild(row);
             });
         }

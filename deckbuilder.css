@@ -643,6 +643,30 @@ CHARACTER SELECTION
     padding-right: 8px;
 }
 
+.deck-type-section.strike-section {
+    grid-template-columns: 90px 32px var(--deck-name-width, max-content) 70px max-content max-content;
+}
+
+.deck-card-intercept,
+.deck-card-force {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.deck-card-intercept {
+    grid-column: 5;
+}
+
+.deck-card-force {
+    grid-column: 6;
+}
+
+.deck-strike-sort-button {
+    width: max-content;
+}
+
 .deck-type-section:last-child {
     border-bottom: 0;
 }
