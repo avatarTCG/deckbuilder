@@ -636,7 +636,7 @@ CHARACTER SELECTION
 .deck-type-section {
     width: 100%;
     display: grid;
-    grid-template-columns: 90px 32px max-content 70px;
+    grid-template-columns: 90px 32px var(--deck-name-width, max-content) 70px;
     column-gap: 50px;
     border-bottom: 1px solid #444;
     padding-left: 8px;

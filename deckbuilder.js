@@ -631,6 +631,34 @@ function renderDeckCardList() {
 
         element.appendChild(section);
     });
+
+    updateDeckNameColumnWidth();
+}
+
+function updateDeckNameColumnWidth() {
+    const sections = document.querySelectorAll(".deck-type-section");
+
+    if (sections.length === 0) {
+        return;
+    }
+
+    let maxNameWidth = 0;
+
+    sections.forEach(section => {
+        const nameElements = section.querySelectorAll(".deck-card-name");
+
+        nameElements.forEach(nameElement => {
+            maxNameWidth = Math.max(
+                maxNameWidth,
+                nameElement.scrollWidth
+            );
+        });
+    });
+
+    document.documentElement.style.setProperty(
+        "--deck-name-width",
+        `${maxNameWidth}px`
+    );
 }
 
 // ============================================================
