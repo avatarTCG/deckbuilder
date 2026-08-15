@@ -7,6 +7,7 @@ const CHAMBER_DATA_URL = "data/characters.json";
 
 const CARD_IMAGE_PATH = "images/cards/";
 const CHAMBER_IMAGE_PATH = "images/chambers/";
+const TRAIT_ICON_PATH = "images/icons/traits/";
 
 const MAX_COPIES = 4;
 const MIN_DECK_SIZE = 60;
@@ -23,6 +24,14 @@ let cards = {};
 let chambers = {};
 
 let selectedChamberCharacter = null;
+let deckSort = "name";
+let deckSortAscending = true;
+
+const deckSectionOpen = {
+    STRIKE: true,
+    ADVANTAGE: true,
+    ALLY: true
+};
 
 let deck = {
     chamber: null,
@@ -105,6 +114,23 @@ async function loadChamberData() {
 // ============================================================
 
 function setupEventListeners() {
+    document
+        .querySelectorAll(".deck-sort-button")
+        .forEach(button => {
+            button.addEventListener("click", () => {
+                const sort = button.dataset.sort;
+
+                if (deckSort === sort) {
+                    deckSortAscending = !deckSortAscending;
+                } else {
+                    deckSort = sort;
+                    deckSortAscending = true;
+                }
+
+                renderDeckCardList();
+            });
+        });
+
     document
         .querySelectorAll('input[name="card-type"]')
         .forEach(checkbox => {
@@ -386,7 +412,7 @@ function getDeckSize() {
 
 function renderDeckCardCount() {
     const count = getDeckSize();
-    document.getElementById("deck-card-count").textContent = `${count}`;
+    document.getElementById("deck-header-card-count").textContent = `${count} / 60`;
 }
 
 function renderDeckCardList() {
@@ -400,68 +426,212 @@ function renderDeckCardList() {
         return;
     }
 
-    cardIds
-        .forEach(cardId => {
-            const card = cards[cardId];
-            if (!card) {
-                return;
+    const typeOrder = [
+        ["STRIKE", "Strikes"],
+        ["ADVANTAGE", "Advantages"],
+        ["ALLY", "Allies"]
+    ];
+
+    typeOrder.forEach(([type, label]) => {
+        const typeCardIds = cardIds.filter(cardId =>
+            cards[cardId] && cards[cardId].type === type
+        );
+
+        const section = document.createElement("section");
+        section.className = "deck-type-section";
+
+        const header = document.createElement("div");
+        header.className = "deck-type-header";
+        header.setAttribute("role", "button");
+        header.setAttribute("tabindex", "0");
+        header.setAttribute("aria-expanded", deckSectionOpen[type]);
+
+        const arrow = document.createElement("span");
+        arrow.className = "deck-type-arrow";
+        arrow.textContent = deckSectionOpen[type] ? "▾" : "▸";
+
+        const title = document.createElement("h3");
+        const count = typeCardIds.reduce(
+            (total, cardId) => total + deck.cards[cardId],
+            0
+        );
+        title.textContent = `${label} — ${count}`;
+
+        header.appendChild(arrow);
+        header.appendChild(title);
+
+        const toggleSection = () => {
+            deckSectionOpen[type] = !deckSectionOpen[type];
+            renderDeckCardList();
+        };
+
+        header.addEventListener("click", toggleSection);
+        header.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggleSection();
             }
-
-            const row = document.createElement("div");
-            row.className = "deck-card";
-
-            const image = document.createElement("img");
-            image.src = `images/cards/${cardId}.png`;
-            image.alt = card.name;
-
-            addCardHoverPreview(image);
-
-            const controls = document.createElement("div");
-            controls.className = "quantity-controls";
-
-            const removeButton = document.createElement("button");
-            removeButton.type = "button";
-            if (deck.cards[cardId] === 1) {
-                //Trash can icon
-                removeButton.innerHTML = `
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M5 7h14M10 4h4l1 3H9l1-3zM7 7l1 13h8l1-13M10 10v7M14 10v7"/>
-                    </svg>
-                `;
-            } else {
-                removeButton.textContent = "−";
-            }
-            removeButton.addEventListener(
-                "click",
-                () => removeCardFromDeck(cardId)
-            );
-
-
-            const quantity = document.createElement("span");
-            quantity.textContent = deck.cards[cardId];
-
-            const addWrapper = document.createElement("span");
-            addWrapper.className = "deck-card-add-wrapper";
-
-            const addButton = document.createElement("button");
-            addButton.textContent = "+";
-            addButton.type = "button";
-            addButton.disabled = deck.cards[cardId] >= MAX_COPIES;
-
-            addButton.addEventListener("click", () => addCardToDeck(cardId));
-            addWrapper.appendChild(addButton);
-
-            controls.appendChild(removeButton);
-            controls.appendChild(quantity);
-            controls.appendChild(addWrapper);
-
-            row.appendChild(image);
-            row.appendChild(controls);
-
-            element.appendChild(row);
         });
-}
 
+        section.appendChild(header);
+
+        if (deckSectionOpen[type]) {
+            const sortHeader = document.createElement("div");
+            sortHeader.className = "deck-sort-header";
+
+            ["qty", "trait", "name", "cost"].forEach(sort => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "deck-sort-button";
+                button.dataset.sort = sort;
+                button.textContent = sort === "qty" ? "Qty" :
+                    sort === "trait" ? "Trait" :
+                    sort === "cost" ? "Cost" : "Name";
+                button.addEventListener("click", event => {
+                    event.stopPropagation();
+
+                    if (deckSort === sort) {
+                        deckSortAscending = !deckSortAscending;
+                    } else {
+                        deckSort = sort;
+                        deckSortAscending = true;
+                    }
+
+                    renderDeckCardList();
+                });
+                sortHeader.appendChild(button);
+            });
+
+            section.appendChild(sortHeader);
+
+            const cardList = [...typeCardIds];
+
+            if (deckSort) {
+                cardList.sort((cardIdA, cardIdB) => {
+                    const cardA = cards[cardIdA];
+                    const cardB = cards[cardIdB];
+                    let result;
+
+                    if (deckSort === "qty") {
+                        result = deck.cards[cardIdA] - deck.cards[cardIdB] ||
+                            cardA.name.localeCompare(cardB.name);
+                    } else if (deckSort === "cost") {
+                        const costA = cardA.cost || {};
+                        const costB = cardB.cost || {};
+                        result = (costA.g || 0) - (costB.g || 0) ||
+                            (costA.y || 0) - (costB.y || 0) ||
+                            (costA.r || 0) - (costB.r || 0) ||
+                            cardA.name.localeCompare(cardB.name);
+                    } else if (deckSort === "trait") {
+                        const traitA = cardA.trait || "NONE";
+                        const traitB = cardB.trait || "NONE";
+
+                        if (traitA === "NONE" && traitB !== "NONE") {
+                            result = -1;
+                        } else if (traitA !== "NONE" && traitB === "NONE") {
+                            result = 1;
+                        } else {
+                            result = traitA.localeCompare(traitB) ||
+                                cardA.name.localeCompare(cardB.name);
+                        }
+                    } else {
+                        result = cardA.name.localeCompare(cardB.name);
+                    }
+
+                    return deckSortAscending ? result : -result;
+                });
+            }
+
+            cardList.forEach(cardId => {
+                const card = cards[cardId];
+                const row = document.createElement("div");
+                row.className = "deck-card";
+
+                const controls = document.createElement("div");
+                controls.className = "quantity-controls";
+
+                const removeButton = document.createElement("button");
+                removeButton.type = "button";
+
+                if (deck.cards[cardId] === 1) {
+                    removeButton.innerHTML = `
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 7h14M10 4h4l1 3H9l1-3zM7 7l1 13h8l1-13M10 10v7M14 10v7"/>
+                        </svg>
+                    `;
+                } else {
+                    removeButton.textContent = "−";
+                }
+
+                removeButton.addEventListener(
+                    "click",
+                    () => removeCardFromDeck(cardId)
+                );
+
+                const quantity = document.createElement("span");
+                quantity.textContent = deck.cards[cardId];
+
+                const addButton = document.createElement("button");
+                addButton.textContent = "+";
+                addButton.type = "button";
+                addButton.disabled = deck.cards[cardId] >= MAX_COPIES;
+                addButton.addEventListener(
+                    "click",
+                    () => addCardToDeck(cardId)
+                );
+
+                controls.appendChild(removeButton);
+                controls.appendChild(quantity);
+                controls.appendChild(addButton);
+
+                const trait = document.createElement("div");
+                trait.className = "deck-card-trait";
+
+                if (card.trait && card.trait !== "NONE") {
+                    const traitIcon = document.createElement("img");
+                    traitIcon.src = `${TRAIT_ICON_PATH}${card.trait}.png`;
+                    traitIcon.alt = card.trait;
+                    trait.appendChild(traitIcon);
+                }
+
+                const cost = document.createElement("div");
+                cost.className = "deck-card-cost";
+
+                const costComponents = [
+                    ["g", "green"],
+                    ["y", "yellow"],
+                    ["r", "red"]
+                ];
+
+                costComponents.forEach(([component, color]) => {
+                    if (card.cost && Object.prototype.hasOwnProperty.call(card.cost, component)) {
+                        const circle = document.createElement("span");
+                        circle.className = `deck-cost-circle deck-cost-${color}`;
+                        circle.textContent = card.cost[component];
+                        cost.appendChild(circle);
+                    }
+                });
+
+                const name = document.createElement("div");
+                name.className = "deck-card-name";
+                name.textContent = card.name;
+
+                addCardHoverPreview(
+                    name,
+                    `${CARD_IMAGE_PATH}${cardId}.png`
+                );
+
+                row.appendChild(controls);
+                row.appendChild(trait);
+                row.appendChild(name);
+                row.appendChild(cost);
+                section.appendChild(row);
+            });
+        }
+
+        element.appendChild(section);
+    });
+}
 
 // ============================================================
 // Chambers
@@ -718,7 +888,7 @@ function clearDeck() {
     renderDeck();
 }
 
-function addCardHoverPreview(image) {
+function addCardHoverPreview(element, imageSrc) {
     let hoverTimer = null;
     let preview = null;
     let hovering = false;
@@ -735,47 +905,59 @@ function addCardHoverPreview(image) {
         }
     }
 
+    function positionPreview() {
+        if (!preview || !hovering) {
+            return;
+        }
+
+        const gap = 10;
+        const rect = element.getBoundingClientRect();
+
+        let left = rect.right + gap;
+
+        if (left + preview.offsetWidth > window.innerWidth - gap) {
+            left = rect.left - preview.offsetWidth - gap;
+        }
+
+        let top = rect.top +
+            (rect.height - preview.offsetHeight) / 2;
+
+        if (top + preview.offsetHeight > window.innerHeight - gap) {
+            top = window.innerHeight - preview.offsetHeight - gap;
+        }
+
+        if (top < gap) {
+            top = gap;
+        }
+
+        preview.style.left = `${left}px`;
+        preview.style.top = `${top}px`;
+        preview.style.visibility = "visible";
+    }
+
     function showPreview() {
         if (!hovering || preview) {
             return;
         }
 
         preview = document.createElement("img");
-        preview.src = image.src;
+        preview.src = imageSrc;
         preview.className = "card-hover-preview";
+
+        // Keep the preview invisible until its dimensions are known
+        // and its position has been calculated.
+        preview.style.visibility = "hidden";
+
+        preview.addEventListener("load", () => {
+            positionPreview();
+        });
 
         document.body.appendChild(preview);
 
-        preview.onload = () => {
-            if (!hovering) {
-                return;
-            }
-
-            const gap = 10;
-            const rect = image.getBoundingClientRect();
-
-            let left = rect.right + gap;
-
-            if (left + preview.offsetWidth > window.innerWidth) {
-                left = rect.left - preview.offsetWidth - gap;
-            }
-
-            // Center vertically on the original card.
-            let top = rect.top + (rect.height - preview.offsetHeight) / 2;
-
-            // Only move upward if the bottom would be off-screen.
-            if (top + preview.offsetHeight > window.innerHeight - gap) {
-                top = window.innerHeight - preview.offsetHeight - gap;
-            }
-
-            // Don't allow the top to go off-screen.
-            if (top < gap) {
-                top = gap;
-            }
-
-            preview.style.left = `${left}px`;
-            preview.style.top = `${top}px`;
-        };
+        // Handles the case where the image is already cached.
+        if (preview.complete) {
+            positionPreview();
+        }
     }
 
     function startTimer() {
@@ -787,12 +969,12 @@ function addCardHoverPreview(image) {
         }, 50);
     }
 
-    image.addEventListener("mouseenter", () => {
+    element.addEventListener("mouseenter", () => {
         hovering = true;
         startTimer();
     });
 
-    image.addEventListener("mousemove", () => {
+    element.addEventListener("mousemove", () => {
         if (!hovering || preview) {
             return;
         }
@@ -800,7 +982,7 @@ function addCardHoverPreview(image) {
         startTimer();
     });
 
-    image.addEventListener("mouseleave", () => {
+    element.addEventListener("mouseleave", () => {
         hovering = false;
         hidePreview();
     });

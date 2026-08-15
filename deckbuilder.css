@@ -114,7 +114,6 @@ MAIN LAYOUT
    CHAMBER
    ========================= */
 
-/* Character selector row */
 .character-selector {
    display: flex;
    flex-wrap: wrap;
@@ -251,21 +250,62 @@ MAIN LAYOUT
     margin: 0;
 }
 
+#deck-header-card-count {
+    margin-left: 1em;
+}
+
+.deck-sort-header {
+    display: grid;
+    padding-bottom: 6px;
+}
+
+.deck-sort-button {
+    padding: 4px 0;
+    background: transparent;
+    border: 0;
+    color: #bbb;
+    text-align: left;
+    font-weight: bold;
+}
+
+.deck-sort-button:hover {
+    background: #333;
+    color: #fff;
+}
+
 .deck-card {
-    display: flex;
+    display: grid;
     align-items: center;
-    gap: 12px;
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
+    padding-top: 6px;
+    padding-bottom: 6px;
 }
 
 .deck-card-name {
-    flex: 1;
+    min-width: 0;
+}
+
+.deck-card-trait {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.deck-card-trait img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 .quantity-controls button {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     padding: 0;
     display: flex;
     align-items: center;
@@ -305,24 +345,12 @@ MAIN LAYOUT
     cursor: pointer;
 }
 
-.deck-panel .deck-card {
+.deck-panel .card-grid {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-.deck-panel .deck-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 6px;
-}
-
-.deck-panel .quantity-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 
@@ -488,10 +516,7 @@ CARDS IN DECK
     scrollbar-gutter: stable;
 }
 
-.deck-panel .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    align-items: start;
-}
+
 
 .deck-panel .card {
     cursor: default;
@@ -602,4 +627,103 @@ CHARACTER SELECTION
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
+}
+
+/* =========================
+   DECK TYPE SECTIONS
+   ========================= */
+
+.deck-type-section {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 90px 32px max-content 70px;
+    column-gap: 50px;
+    border-bottom: 1px solid #444;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.deck-type-section:last-child {
+    border-bottom: 0;
+}
+
+.deck-type-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 4px 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.deck-type-header:hover {
+    background: #292929;
+}
+
+.deck-type-header:focus {
+    outline: 1px solid #777;
+    outline-offset: -1px;
+}
+
+.deck-type-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.deck-type-arrow {
+    width: 14px;
+    flex-shrink: 0;
+    color: #bbb;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.deck-type-section .deck-sort-header,
+.deck-type-section .deck-card {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+}
+
+.deck-type-section .deck-sort-header {
+    border-bottom: 0;
+}
+
+.deck-type-section .deck-card:last-child {
+    border-bottom: 0;
+}
+
+.deck-card-cost {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.deck-cost-circle {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.deck-cost-green {
+    background: #345D2D;
+}
+
+.deck-cost-yellow {
+    background: #F2B900;
+    color: white;
+}
+
+.deck-cost-red {
+    background: #A2160E;
 }
