@@ -6,7 +6,7 @@ const CARD_DATA_URL = "data/cards.json";
 const CHAMBER_DATA_URL = "data/characters.json";
 
 const CARD_IMAGE_PATH = "images/cards/";
-const CHAMBER_IMAGE_PATH = "images/chambers/"
+const CHAMBER_IMAGE_PATH = "images/chambers/";
 
 const MAX_COPIES = 4;
 const MIN_DECK_SIZE = 60;
@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         initializeCardFilters();
         renderChambers();
-        renderCards();
         renderDeck();
     } catch (error) {
         console.error(error);
@@ -106,7 +105,23 @@ async function loadChamberData() {
 // ============================================================
 
 function setupEventListeners() {
+    document
+        .querySelectorAll('input[name="card-type"]')
+        .forEach(checkbox => {
+            checkbox.checked = selectedTypes.has(checkbox.value);
 
+            checkbox.addEventListener("change", () => {
+                if (checkbox.checked) {
+                    selectedTypes.add(checkbox.value);
+                } else {
+                    selectedTypes.delete(checkbox.value);
+                }
+
+                if (deck.chamber) {
+                    renderCards();
+                }
+            });
+        });
 }
 
 
@@ -121,7 +136,6 @@ let selectedTraits = new Set();
 
 
 function initializeCardFilters() {
-    selectedTypes = new Set(FILTER_TYPES);
     selectedTraits = new Set();
 
     const traitContainer = document.getElementById("trait-filters");
@@ -137,12 +151,8 @@ function initializeCardFilters() {
     }
 
     const traits = new Set(character.traits);
-
-    // NONE is always legal for the character.
     traits.add("NONE");
 
-    // Include ZENEMENTAL only when this character has character-specific
-    // ZENEMENTAL cards in the card pool.
     const hasZenementalCards = Object.values(cards).some(card =>
         card.trait === "ZENEMENTAL" &&
         card.character === character.character
@@ -172,29 +182,14 @@ function initializeCardFilters() {
                     selectedTraits.delete(trait);
                 }
 
-                applyCardFilters();
+                if (deck.chamber) {
+                    renderCards();
+                }
             });
 
             label.appendChild(checkbox);
             label.appendChild(document.createTextNode(` ${trait}`));
-
             traitContainer.appendChild(label);
-        });
-
-    document
-        .querySelectorAll('input[name="card-type"]')
-        .forEach(checkbox => {
-            checkbox.checked = true;
-
-            checkbox.addEventListener("change", () => {
-                if (checkbox.checked) {
-                    selectedTypes.add(checkbox.value);
-                } else {
-                    selectedTypes.delete(checkbox.value);
-                }
-
-                applyCardFilters();
-            });
         });
 }
 
@@ -222,7 +217,15 @@ function isCardVisible(card) {
 
 function renderCards() {
     const grid = document.getElementById("available-cards");
+    const heading = document.querySelector(".available-panel h2");
 
+    if (!deck.chamber) {
+        heading.textContent = "Available Chambers";
+        renderAvailableChambers(grid);
+        return;
+    }
+
+    heading.textContent = "Available Cards";
     grid.classList.remove("chamber-grid");
     grid.innerHTML = "";
 
@@ -489,24 +492,17 @@ function renderAvailableChambers(element) {
         return;
     }
 
-    Object.keys(character.chambers).sort().forEach(chamberId => {
-        const choice = document.createElement("div");
-        choice.className = "chamber-choice";
-
-        if (deck.chamber && deck.chamber.id === chamberId) {
-            choice.classList.add("selected");
-        }
-
-        choice.title = `${character.name} - ${chamberId}`;
-        choice.appendChild(createChamberPreview(selectedChamberCharacter, chamberId, "front"));
-
-        const label = document.createElement("div");
-        label.textContent = chamberId;
-        choice.appendChild(label);
-
-        choice.addEventListener("click", () => selectChamber(selectedChamberCharacter, chamberId));
-        element.appendChild(choice);
-    });
+    Object.entries(character.chambers)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .forEach(([chamberId, chamber]) => {
+            element.appendChild(
+                createChamberChoice(
+                    selectedChamberCharacter,
+                    chamberId,
+                    chamber
+                )
+            );
+        });
 }
 
 function createChamberPreview(characterKey, chamberId, side = "front") {
@@ -720,7 +716,6 @@ function clearDeck() {
 
     renderChambers();
     renderDeck();
-    renderCards();
 }
 
 function addCardHoverPreview(image) {
