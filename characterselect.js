@@ -5,6 +5,9 @@ const SELECTED_CHARACTER_KEY = "selected-character";
 let characters = {};
 let selectedCharacter = null;
 
+localStorage.removeItem("card-game-deck");
+localStorage.removeItem("selected-character");
+
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         await loadChamberData();
