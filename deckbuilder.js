@@ -292,15 +292,19 @@ function updateCardQuantity(cardId) {
     }
 
     const quantity = deck.cards[cardId] || 0;
-    const badge = cardElement.querySelector(".card-quantity");
+    let badge = cardElement.querySelector(".card-quantity");
 
-    if (badge) {
-        if(quantity > 0) {
-            badge.textContent = quantity;
-            badge.style.display = "flex";
-        } else {
-            badge.style.display = "none";
+    if (quantity > 0) {
+        if (!badge) {
+            badge = document.createElement("div");
+            badge.className = "card-quantity";
+            cardElement.appendChild(badge);
         }
+
+        badge.textContent = quantity;
+        badge.style.display = "flex";
+    } else if (badge) {
+        badge.remove();
     }
 }
 
