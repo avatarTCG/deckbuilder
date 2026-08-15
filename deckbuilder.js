@@ -226,7 +226,7 @@ function initializeCardFilters() {
             });
 
             label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(` ${trait}`));
+            label.appendChild(document.createTextNode(trait.charAt(0).toUpperCase() + trait.slice(1).toLowerCase()));
             traitContainer.appendChild(label);
         });
 }
